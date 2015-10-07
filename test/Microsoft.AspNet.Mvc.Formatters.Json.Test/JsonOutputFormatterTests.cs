@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Internal;
 using Microsoft.AspNet.Mvc.Abstractions;
+using Microsoft.AspNet.Mvc.Infrastructure;
 using Microsoft.AspNet.Routing;
 using Microsoft.AspNet.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using Moq;
 using Newtonsoft.Json;
@@ -230,6 +232,9 @@ namespace Microsoft.AspNet.Mvc.Formatters
             MediaTypeHeaderValue contentType,
             MemoryStream responseStream = null)
         {
+            var services = new ServiceCollection();
+            services.AddInstance<IHttpResponseStreamWriterFactory>(new TestHttpResponseStreamWriterFactory());
+
             var request = new Mock<HttpRequest>();
             var headers = new HeaderDictionary();
             request.Setup(r => r.ContentType).Returns(contentType.ToString());
@@ -239,6 +244,7 @@ namespace Microsoft.AspNet.Mvc.Formatters
             response.SetupGet(f => f.Body).Returns(responseStream ?? new MemoryStream());
             var httpContext = new Mock<HttpContext>();
             httpContext.SetupGet(c => c.Request).Returns(request.Object);
+            httpContext.SetupGet(c => c.RequestServices).Returns(services.BuildServiceProvider());
             httpContext.SetupGet(c => c.Response).Returns(response.Object);
             return new ActionContext(httpContext.Object, new RouteData(), new ActionDescriptor());
         }

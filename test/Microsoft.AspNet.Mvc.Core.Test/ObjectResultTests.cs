@@ -529,6 +529,10 @@ namespace Microsoft.AspNet.Mvc
             tempHttpResponse.SetupProperty<string>(o => o.ContentType);
             tempHttpContext.SetupGet(o => o.Request).Returns(new DefaultHttpContext().Request);
             tempHttpContext.SetupGet(o => o.Response).Returns(tempHttpResponse.Object);
+            tempHttpContext
+                .Setup(c => c.RequestServices.GetService(typeof(IHttpResponseStreamWriterFactory)))
+                .Returns(new TestHttpResponseStreamWriterFactory());
+
             var tempActionContext = new ActionContext(tempHttpContext.Object,
                                                       new RouteData(),
                                                       new ActionDescriptor());
@@ -904,10 +908,15 @@ namespace Microsoft.AspNet.Mvc
             }
 
             optionsAccessor.Value.RespectBrowserAcceptHeader = respectBrowserAcceptHeader;
-            httpContext.Setup(o => o.RequestServices.GetService(typeof(IOptions<MvcOptions>)))
+            httpContext
+                .Setup(o => o.RequestServices.GetService(typeof(IOptions<MvcOptions>)))
                 .Returns(optionsAccessor);
-            httpContext.Setup(o => o.RequestServices.GetService(typeof(ILogger<ObjectResult>)))
+            httpContext
+                .Setup(o => o.RequestServices.GetService(typeof(ILogger<ObjectResult>)))
                 .Returns(new Mock<ILogger<ObjectResult>>().Object);
+            httpContext
+                .Setup(o => o.RequestServices.GetService(typeof(IHttpResponseStreamWriterFactory)))
+                .Returns(new TestHttpResponseStreamWriterFactory());
 
             ActionBindingContext actionBindingContext = null;
             if (setupActionBindingContext)
@@ -945,12 +954,11 @@ namespace Microsoft.AspNet.Mvc
 
         private static IServiceProvider GetServiceProvider()
         {
-            var options = new MvcOptions();
-            var optionsAccessor = new Mock<IOptions<MvcOptions>>();
-            optionsAccessor.SetupGet(o => o.Value).Returns(options);
+            var optionsAccessor = new TestOptionsManager<MvcOptions>();
 
             var serviceCollection = new ServiceCollection();
-            serviceCollection.AddInstance(optionsAccessor.Object);
+            serviceCollection.AddInstance(optionsAccessor);
+            serviceCollection.AddInstance<IHttpResponseStreamWriterFactory>(new TestHttpResponseStreamWriterFactory());
             return serviceCollection.BuildServiceProvider();
         }
 

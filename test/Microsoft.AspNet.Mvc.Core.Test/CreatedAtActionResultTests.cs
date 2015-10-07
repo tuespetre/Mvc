@@ -101,10 +101,16 @@ namespace Microsoft.AspNet.Mvc
             var optionsAccessor = new TestOptionsManager<MvcOptions>();
             optionsAccessor.Value.OutputFormatters.Add(new StringOutputFormatter());
             optionsAccessor.Value.OutputFormatters.Add(new JsonOutputFormatter());
-            services.Setup(p => p.GetService(typeof(IOptions<MvcOptions>)))
+            services
+                .Setup(p => p.GetService(typeof(IOptions<MvcOptions>)))
                 .Returns(optionsAccessor);
-            services.Setup(s => s.GetService(typeof(ILogger<ObjectResult>)))
-                       .Returns(new Mock<ILogger<ObjectResult>>().Object);
+            services
+                .Setup(s => s.GetService(typeof(ILogger<ObjectResult>)))
+                .Returns(new Mock<ILogger<ObjectResult>>().Object);
+
+            services
+                .Setup(s => s.GetService(typeof(IHttpResponseStreamWriterFactory)))
+                .Returns(new TestHttpResponseStreamWriterFactory());
 
             var actionBindingContext = new ActionBindingContext
             {

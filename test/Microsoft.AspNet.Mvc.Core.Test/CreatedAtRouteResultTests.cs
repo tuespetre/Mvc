@@ -109,6 +109,9 @@ namespace Microsoft.AspNet.Mvc
                 .Returns(optionsAccessor);
             httpContext.Setup(o => o.RequestServices.GetService(typeof(ILogger<ObjectResult>)))
                 .Returns(new Mock<ILogger<ObjectResult>>().Object);
+            httpContext
+                .Setup(c => c.RequestServices.GetService(typeof(IHttpResponseStreamWriterFactory)))
+                .Returns(new TestHttpResponseStreamWriterFactory());
             httpContext.Setup(o => o.Response)
                        .Returns(response);
 

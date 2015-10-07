@@ -89,6 +89,7 @@ namespace Microsoft.AspNet.Mvc
                 ActionBindingContext = bindingContext,
             };
             services.Add(new ServiceDescriptor(typeof(IActionBindingContextAccessor), bindingContextAccessor));
+            services.AddInstance<IHttpResponseStreamWriterFactory>(new TestHttpResponseStreamWriterFactory());
 
             return services.BuildServiceProvider();
         }

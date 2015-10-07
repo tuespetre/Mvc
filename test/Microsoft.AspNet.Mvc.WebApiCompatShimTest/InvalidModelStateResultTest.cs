@@ -90,14 +90,21 @@ namespace System.Web.Http
                 .Returns(options);
 
             var actionBindingContext = new ActionBindingContext { OutputFormatters = options.OutputFormatters };
-            services.Setup(o => o.GetService(typeof(IActionBindingContextAccessor)))
-                    .Returns(new ActionBindingContextAccessor() { ActionBindingContext = actionBindingContext });
+            services
+                .Setup(o => o.GetService(typeof(IActionBindingContextAccessor)))
+                .Returns(new ActionBindingContextAccessor() { ActionBindingContext = actionBindingContext });
 
-            services.Setup(s => s.GetService(typeof(IOptions<MvcOptions>)))
+            services
+                .Setup(s => s.GetService(typeof(IOptions<MvcOptions>)))
                 .Returns(optionsAccessor.Object);
 
-            services.Setup(s => s.GetService(typeof(ILogger<ObjectResult>)))
+            services
+                .Setup(s => s.GetService(typeof(ILogger<ObjectResult>)))
                 .Returns(new Mock<ILogger<ObjectResult>>().Object);
+
+            services
+                .Setup(s => s.GetService(typeof(IHttpResponseStreamWriterFactory)))
+                .Returns(new TestHttpResponseStreamWriterFactory());
 
             return services.Object;
         }

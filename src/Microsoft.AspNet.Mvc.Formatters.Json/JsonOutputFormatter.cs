@@ -5,7 +5,9 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Mvc.Infrastructure;
 using Microsoft.AspNet.Mvc.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace Microsoft.AspNet.Mvc.Formatters
@@ -105,10 +107,13 @@ namespace Microsoft.AspNet.Mvc.Formatters
                 throw new ArgumentNullException(nameof(context));
             }
 
+            var services = context.HttpContext.RequestServices;
+            var writerFactory = services.GetRequiredService<IHttpResponseStreamWriterFactory>();
+
             var response = context.HttpContext.Response;
             var selectedEncoding = context.SelectedEncoding;
 
-            using (var writer = new HttpResponseStreamWriter(response.Body, selectedEncoding))
+            using (var writer = writerFactory.CreateWriter(response.Body, selectedEncoding))
             {
                 WriteObject(writer, context.Object);
             }
