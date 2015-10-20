@@ -114,6 +114,7 @@ namespace Microsoft.AspNet.Mvc.ViewFeatures
 
             Logger.PartialViewResultExecuting(view);
 
+            Logger.PartialViewResultExecuted(actionContext, viewResult.ViewName);
             return ExecuteAsync(
                 actionContext,
                 view,

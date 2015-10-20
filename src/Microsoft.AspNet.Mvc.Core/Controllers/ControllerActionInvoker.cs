@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.Core;
+using Microsoft.AspNet.Mvc.Core.Logging;
 using Microsoft.AspNet.Mvc.Filters;
 using Microsoft.AspNet.Mvc.Formatters;
 using Microsoft.AspNet.Mvc.Infrastructure;
@@ -18,34 +19,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.AspNet.Mvc.Controllers
 {
-    internal static class ControllerActionInvokerLoggerExtensions
-    {
-        private static Action<ILogger, string, ModelValidationState?, Exception> _actionStarting;
-        private static Action<ILogger, string, Exception> _actionFinishing;
-
-        static ControllerActionInvokerLoggerExtensions()
-        {
-            //TODO: Eventids?
-            _actionStarting = LoggerMessage.Define<string, ModelValidationState?>(LogLevel.Information, 1, "Starting Action {ActionName}. Model state is {ModelValidationState}'");
-            _actionFinishing = LoggerMessage.Define<string>(LogLevel.Information, 2, "Stopping Action {ActionName}'");
-        }
-
-        public static void ActionStarting(this ILogger logger, ActionExecutingContext actionContext, Exception exception = null)
-        {
-            var actionName = actionContext.ActionDescriptor.DisplayName;
-            var modelValidationState = actionContext.ModelState?.ValidationState;
-            _actionStarting(logger, actionName, modelValidationState, exception);
-        }
-
-        public static void ActionFinishing(this ILogger logger, ActionExecutingContext actionContext, Exception exception = null)
-        {
-            _actionFinishing(logger, actionContext.ActionDescriptor.DisplayName, exception);
-        }
-    }
-
     public class ControllerActionInvoker : FilterActionInvoker
     {
-
         private readonly ControllerActionDescriptor _descriptor;
         private readonly IControllerFactory _controllerFactory;
         private readonly IControllerActionArgumentBinder _argumentBinder;
@@ -177,13 +152,10 @@ namespace Microsoft.AspNet.Mvc.Controllers
                 actionExecutingContext.ActionArguments,
                 actionMethodInfo.GetParameters());
 
-            Logger.ActionMethodExecuting(actionExecutingContext, arguments);
-
             var actionReturnValue = await ControllerActionExecutor.ExecuteAsync(
                 actionMethodInfo,
                 actionExecutingContext.Controller,
                 arguments);
-
 
             var actionResult = CreateActionResult(
                 actionMethodInfo.ReturnType,

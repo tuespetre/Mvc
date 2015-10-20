@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Mvc.Internal;
+using Microsoft.AspNet.Mvc.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging;
@@ -14,24 +15,6 @@ using Microsoft.Net.Http.Headers;
 
 namespace Microsoft.AspNet.Mvc
 {
-    internal static class ContentResultLoggerExtensions
-    {
-        private static Action<ILogger, string, string, Exception> _resultExecuted;
-
-        static ContentResultLoggerExtensions()
-        {
-            _resultExecuted = LoggerMessage.Define<string, string>(LogLevel.Information, 6,
-                "ContentResult for action {ActionName} executed, had ContentType of {ContentType}");
-        }
-
-        public static void ContentResultExecuted(this ILogger logger, ActionContext context,
-            MediaTypeHeaderValue contentType, Exception exception = null)
-        {
-            var actionName = context.ActionDescriptor.DisplayName;
-            _resultExecuted(logger, actionName, contentType.MediaType, exception);
-        }
-    }
-
     public class ContentResult : ActionResult
     {
         private readonly MediaTypeHeaderValue DefaultContentType = new MediaTypeHeaderValue("text/plain")

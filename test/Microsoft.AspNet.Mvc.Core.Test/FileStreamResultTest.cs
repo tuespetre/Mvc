@@ -168,6 +168,8 @@ namespace Microsoft.AspNet.Mvc
             httpContext.RequestServices = services.BuildServiceProvider();
 
             return httpContext;
+
+            return httpContext;
         }
     }
 }

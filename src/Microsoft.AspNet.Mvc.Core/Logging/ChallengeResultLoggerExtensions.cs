@@ -4,25 +4,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.AspNet.Mvc.Logging
 {
     public static class ChallengeResultLoggerExtenstions
     {
-        private static Action<ILogger, string[], Exception> _challengeResultExecuting;
+        private static Action<ILogger, string, Exception> _challengeResultExecuted;
 
         static ChallengeResultLoggerExtenstions()
         {
-            _challengeResultExecuting = LoggerMessage.Define<string[]>(
-                LogLevel.Information,
-                1,
-                "Executing ChallengeResult with authentication schemes ({Schemes}).");
+            _challengeResultExecuted = LoggerMessage.Define<string>(LogLevel.Information, 1, "ChallengeResult for action {ActionName} executed.");
         }
 
-        public static void ChallengeResultExecuting(this ILogger logger, IList<string> schemes)
+        public static void ChallengeResultExecuted(this ILogger logger, ActionContext context)
         {
-            _challengeResultExecuting(logger, schemes.ToArray(), null);
+            var actionName = context.ActionDescriptor.DisplayName;
+            _challengeResultExecuted(logger, actionName, null);
         }
     }
 }

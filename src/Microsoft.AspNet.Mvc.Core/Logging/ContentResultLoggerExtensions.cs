@@ -2,6 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
@@ -9,19 +12,18 @@ namespace Microsoft.AspNet.Mvc.Logging
 {
     public static class ContentResultLoggerExtensions
     {
-        private static Action<ILogger, string, Exception> _contentResultExecuting;
+        private static Action<ILogger, string, string, Exception> _contentResultExecuted;
 
         static ContentResultLoggerExtensions()
         {
-            _contentResultExecuting = LoggerMessage.Define<string>(
-                LogLevel.Information,
-                1,
-                "Executing ContentResult with HTTP Response ContentType of {ContentType}");
+            _contentResultExecuted = LoggerMessage.Define<string, string>(LogLevel.Information, 1, "ContentResult for action {ActionName} executed, had ContentType of {ContentType}");
         }
 
-        public static void ContentResultExecuting(this ILogger logger, MediaTypeHeaderValue contentType)
+        public static void ContentResultExecuted(this ILogger logger, ActionContext context,
+            MediaTypeHeaderValue contentType)
         {
-            _contentResultExecuting(logger, contentType?.MediaType, null);
+            var actionName = context.ActionDescriptor.DisplayName;
+            _contentResultExecuted(logger, actionName, contentType.MediaType, null);
         }
     }
 }

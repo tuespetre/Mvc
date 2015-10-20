@@ -2145,7 +2145,7 @@ namespace Microsoft.AspNet.Mvc.Controllers
         {
             var services = new ServiceCollection();
 
-            services.AddInstance<ILoggerFactory>(NullLoggerFactory.Instance);
+            services.AddTransient<ILoggerFactory, LoggerFactory>();
 
             return services;
         }

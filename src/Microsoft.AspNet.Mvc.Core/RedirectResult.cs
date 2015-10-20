@@ -10,24 +10,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.AspNet.Mvc
 {
-    internal static class RedirectResultLoggerExtensions
-    {
-        private static Action<ILogger, string, string, Exception> _resultExecuted;
-
-        static RedirectResultLoggerExtensions()
-        {
-            _resultExecuted = LoggerMessage.Define<string, string>(LogLevel.Information, 12,
-                "RedirectResult for action {ActionName} executed. The destination was {Destination}");
-        }
-
-        public static void RedirectResultExecuted(this ILogger logger, ActionContext context,
-            string destination, Exception exception = null)
-        {
-            var actionName = context.ActionDescriptor.DisplayName;
-            _resultExecuted(logger, actionName, destination, exception);
-        }
-    }
-
     public class RedirectResult : ActionResult, IKeepTempDataResult
     {
         private string _url;
@@ -97,7 +79,6 @@ namespace Microsoft.AspNet.Mvc
                 destinationUrl = urlHelper.Content(Url);
             }
 
-            logger.RedirectResultExecuting(destinationUrl);
             context.HttpContext.Response.Redirect(destinationUrl, Permanent);
 
             logger.RedirectResultExecuted(context, destinationUrl);

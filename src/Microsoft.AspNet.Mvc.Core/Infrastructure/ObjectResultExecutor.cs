@@ -141,7 +141,7 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                 selectedFormatter.GetType().FullName,
                 formatterContext.ContentType);
             
-            Logger.ObjectResultExecuting(context);
+            Logger.ObjectResultExecuted(context);
             
             result.OnFormatting(context);
             return selectedFormatter.WriteAsync(formatterContext);

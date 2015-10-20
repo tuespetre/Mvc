@@ -136,7 +136,7 @@ namespace Microsoft.AspNet.Mvc.ViewFeatures
             }
 
 
-            Logger.ViewResultExecuting(view);
+            Logger.ViewResultExecuted(actionContext, view);
 
             return ExecuteAsync(
                 actionContext,
