@@ -12,6 +12,24 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.AspNet.Mvc
 {
+    internal static class RedirectToRouteResultLoggerExtensions
+    {
+        private static Action<ILogger, string, string, Exception> _resultExecuted;
+
+        static RedirectToRouteResultLoggerExtensions()
+        {
+            _resultExecuted = LoggerMessage.Define<string, string>(LogLevel.Information, 11,
+                "RedirectToRouteResult for action {ActionName} executed. The destination was {Destination}");
+        }
+
+        public static void RedirectToRouteResultExecuted(this ILogger logger, ActionContext context,
+            string destination, Exception exception = null)
+        {
+            var actionName = context.ActionDescriptor.DisplayName;
+            _resultExecuted(logger, actionName, destination, exception);
+        }
+    }
+
     public class RedirectToRouteResult : ActionResult, IKeepTempDataResult
     {
         public RedirectToRouteResult(object routeValues)
@@ -64,6 +82,7 @@ namespace Microsoft.AspNet.Mvc
 
             logger.RedirectToRouteResultExecuting(destinationUrl, RouteName);
             context.HttpContext.Response.Redirect(destinationUrl, Permanent);
+            logger.RedirectToRouteResultExecuted(context, destinationUrl);
         }
 
         private IUrlHelper GetUrlHelper(ActionContext context)
