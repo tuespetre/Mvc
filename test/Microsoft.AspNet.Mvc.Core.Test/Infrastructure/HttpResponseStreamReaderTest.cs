@@ -97,7 +97,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
         }
 
         [Fact]
+<<<<<<< HEAD
         public static void Read_ReadAllCharactersAtOnce()
+=======
+        public static void VanillaReads1()
+>>>>>>> Add InputFormatter buffer pooling
         {
             // Arrange
             var reader = CreateReader();
@@ -115,7 +119,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
         }
 
         [Fact]
+<<<<<<< HEAD
         public static async Task Read_ReadInTwoChunks()
+=======
+        public static async Task VanillaReads2WithAsync()
+>>>>>>> Add InputFormatter buffer pooling
         {
             // Arrange
             var reader = CreateReader();
@@ -133,7 +141,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
         }
 
         [Fact]
+<<<<<<< HEAD
         public static void ReadLine_ReadMultipleLines()
+=======
+        public static void VanillaReadLines()
+>>>>>>> Add InputFormatter buffer pooling
         {
             // Arrange
             var reader = CreateReader();
@@ -154,7 +166,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
         }
 
         [Fact]
+<<<<<<< HEAD
         public static void ReadLine_ReadWithNoNewlines()
+=======
+        public static void VanillaReadLines2()
+>>>>>>> Add InputFormatter buffer pooling
         {
             // Arrange
             var reader = CreateReader();
@@ -170,7 +186,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
         }
 
         [Fact]
+<<<<<<< HEAD
         public static async Task ReadLineAsync_MultipleContinuousLines()
+=======
+        public static async Task ContinuousNewLinesAndTabsAsync()
+>>>>>>> Add InputFormatter buffer pooling
         {
             // Arrange
             var stream = new MemoryStream();
@@ -185,7 +205,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
             for (var i = 0; i < 4; i++)
             {
                 var data = await reader.ReadLineAsync();
+<<<<<<< HEAD
                 Assert.Equal(string.Empty, data);
+=======
+                Assert.Equal(String.Empty, data);
+>>>>>>> Add InputFormatter buffer pooling
             }
 
             var eol = await reader.ReadLineAsync();

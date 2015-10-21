@@ -3,6 +3,10 @@
 
 using System;
 using System.Diagnostics;
+<<<<<<< HEAD
+=======
+using System.Diagnostics.Contracts;
+>>>>>>> Add InputFormatter buffer pooling
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +21,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
         private const int MinBufferSize = 128;
         private const int MaxSharedBuilderCapacity = 360; // also the max capacity used in StringBuilderCache
 
+<<<<<<< HEAD
         private Stream _stream;
+=======
+        private readonly Stream _stream;
+>>>>>>> Add InputFormatter buffer pooling
         private readonly Encoding _encoding;
         private readonly Decoder _decoder;
 
@@ -140,10 +148,15 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
 
         protected override void Dispose(bool disposing)
         {
+<<<<<<< HEAD
             if (disposing && _stream != null)
             {
                 _stream = null;
 
+=======
+            if (disposing)
+            {
+>>>>>>> Add InputFormatter buffer pooling
                 if (_leasedByteBuffer != null)
                 {
                     _leasedByteBuffer.Owner.Return(_leasedByteBuffer);
@@ -279,7 +292,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                 throw new ObjectDisposedException("stream");
             }
 
+<<<<<<< HEAD
             if (_charBufferIndex == _charsRead && await ReadIntoBufferAsync() == 0)
+=======
+            if (_charBufferIndex == _charsRead && (await ReadIntoBufferAsync().ConfigureAwait(false)) == 0)
+>>>>>>> Add InputFormatter buffer pooling
             {
                 return 0;
             }
@@ -288,7 +305,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
             while (count > 0)
             {
                 // n is the characters available in _charBuffer
+<<<<<<< HEAD
                 var n = _charsRead - _charBufferIndex;
+=======
+                int n = _charsRead - _charBufferIndex;
+>>>>>>> Add InputFormatter buffer pooling
 
                 // charBuffer is empty, let's read from the stream
                 if (n == 0)
@@ -305,7 +326,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                         _bytesRead = await _stream.ReadAsync(
                             _byteBuffer.Array,
                             _byteBuffer.Offset,
+<<<<<<< HEAD
                             _byteBufferSize);
+=======
+                            _byteBufferSize).ConfigureAwait(false);
+>>>>>>> Add InputFormatter buffer pooling
                         if (_bytesRead == 0)  // EOF
                         {
                             _isBlocked = true;
@@ -313,9 +338,17 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                         }
 
                         // _isBlocked == whether we read fewer bytes than we asked for.
+<<<<<<< HEAD
                         _isBlocked = (_bytesRead < _byteBufferSize);
 
                         Debug.Assert(n == 0);
+=======
+                        // Note we must check it here because CompressBuffer or 
+                        // DetectEncoding will change _byteLen.
+                        _isBlocked = (_bytesRead < _byteBufferSize);
+
+                        Contract.Assert(n == 0);
+>>>>>>> Add InputFormatter buffer pooling
 
                         _charBufferIndex = 0;
                         n = _decoder.GetChars(
@@ -324,6 +357,7 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                             _bytesRead,
                             _charBuffer.Array,
                             _charBuffer.Offset);
+<<<<<<< HEAD
                         
                         Debug.Assert(n > 0);
 
@@ -336,6 +370,19 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                         break; // We're at EOF
                     }
                 }
+=======
+
+                        // Why did the bytes yield no chars?
+                        Contract.Assert(n > 0);
+
+                        _charsRead += n;  // Number of chars in StreamReader's buffer.
+
+                    }
+                    while (n == 0);
+
+                    if (n == 0) break;  // We're at EOF
+                }  // if (n == 0)
+>>>>>>> Add InputFormatter buffer pooling
 
                 // Got more chars in charBuffer than the user requested
                 if (n > count)
@@ -390,7 +437,10 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                     _charBuffer.Offset + _charsRead);
             }
             while (_charsRead == 0);
+<<<<<<< HEAD
 
+=======
+>>>>>>> Add InputFormatter buffer pooling
             return _charsRead;
         }
 
@@ -414,6 +464,11 @@ namespace Microsoft.AspNet.Mvc.Infrastructure
                 }
 
                 // _isBlocked == whether we read fewer bytes than we asked for.
+<<<<<<< HEAD
+=======
+                // Note we must check it here because CompressBuffer or 
+                // DetectEncoding will change _byteLen.
+>>>>>>> Add InputFormatter buffer pooling
                 _isBlocked = (_bytesRead < _byteBufferSize);
 
                 _charsRead += _decoder.GetChars(
