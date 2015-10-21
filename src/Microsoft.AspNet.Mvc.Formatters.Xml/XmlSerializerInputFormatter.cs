@@ -4,15 +4,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.AspNet.Mvc.Formatters.Xml;
 using Microsoft.AspNet.Mvc.Formatters.Xml.Internal;
-using Microsoft.AspNet.Mvc.Internal;
-using Microsoft.Net.Http.Headers;
 
 namespace Microsoft.AspNet.Mvc.Formatters
 {
@@ -73,27 +69,34 @@ namespace Microsoft.AspNet.Mvc.Formatters
                 return InputFormatterResult.FailureAsync();
             }
 
+            var type = GetSerializableType(context.ModelType);
+            var serializer = GetCachedSerializer(type);
+
+            object deserializedObject;
             var request = context.HttpContext.Request;
-            using (var xmlReader = CreateXmlReader(new NonDisposableStream(request.Body), effectiveEncoding))
+            using (var reader = context.ReaderFactory(request.Body, effectiveEncoding))
             {
-                var type = GetSerializableType(context.ModelType);
-
-                var serializer = GetCachedSerializer(type);
-
-                var deserializedObject = serializer.Deserialize(xmlReader);
-
-                // Unwrap only if the original type was wrapped.
-                if (type != context.ModelType)
+                using (var xmlTextReader = XmlReader.Create(reader))
                 {
-                    var unwrappable = deserializedObject as IUnwrappable;
-                    if (unwrappable != null)
+                    using (var xmlReader = XmlDictionaryReader.CreateDictionaryReader(xmlTextReader))
                     {
-                        deserializedObject = unwrappable.Unwrap(declaredType: context.ModelType);
+                        _readerQuotas.CopyTo(xmlReader.Quotas);
+                        deserializedObject = serializer.Deserialize(xmlReader);
                     }
                 }
-
-                return InputFormatterResult.SuccessAsync(deserializedObject);
             }
+
+            // Unwrap only if the original type was wrapped.
+            if (type != context.ModelType)
+            {
+                var unwrappable = deserializedObject as IUnwrappable;
+                if (unwrappable != null)
+                {
+                    deserializedObject = unwrappable.Unwrap(declaredType: context.ModelType);
+                }
+            }
+
+            return InputFormatterResult.SuccessAsync(deserializedObject);
         }
 
         /// <inheritdoc />
@@ -123,27 +126,6 @@ namespace Microsoft.AspNet.Mvc.Formatters
                                                     new WrapperProviderContext(declaredType, isSerialization: false));
 
             return wrapperProvider?.WrappingType ?? declaredType;
-        }
-
-        /// <summary>
-        /// Called during deserialization to get the <see cref="XmlReader"/>.
-        /// </summary>
-        /// <param name="readStream">The <see cref="Stream"/> from which to read.</param>
-        /// <param name="encoding">The <see cref="Encoding"/> used to read the stream.</param>
-        /// <returns>The <see cref="XmlReader"/> used during deserialization.</returns>
-        protected virtual XmlReader CreateXmlReader(Stream readStream, Encoding encoding)
-        {
-            if (readStream == null)
-            {
-                throw new ArgumentNullException(nameof(readStream));
-            }
-
-            if (encoding == null)
-            {
-                throw new ArgumentNullException(nameof(encoding));
-            }
-
-            return XmlDictionaryReader.CreateTextReader(readStream, encoding, _readerQuotas, onClose: null);
         }
 
         /// <summary>
