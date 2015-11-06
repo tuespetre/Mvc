@@ -66,15 +66,13 @@ namespace Microsoft.AspNet.Mvc.ViewFeatures
 
             Func<object, object> modelAccessor = (container) =>
             {
-                // TODO: If someone is doing " model => model == null ? "First" : model.First " then this will break it
-                // however, in the normal case of "model => model.First" this will save us ~73ms/field when the model is null
-                if (container == null)
-                {
-                    return null;
-                }
-                else
+                try
                 {
                     return CachedExpressionCompiler.Process(expression)((TModel)container);
+                }
+                catch (NullReferenceException)
+                {
+                    return null;
                 }
             };
 
