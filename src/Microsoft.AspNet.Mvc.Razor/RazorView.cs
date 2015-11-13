@@ -8,9 +8,12 @@ using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http.Features;
+using Microsoft.AspNet.Mvc.Razor.Buffer;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.ViewEngines;
 using Microsoft.AspNet.PageExecutionInstrumentation;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.MemoryPool;
 
 namespace Microsoft.AspNet.Mvc.Razor
 {
@@ -99,7 +102,22 @@ namespace Microsoft.AspNet.Mvc.Razor
             ViewContext context,
             bool executeViewStart)
         {
-            var razorTextWriter = new RazorTextWriter(context.Writer, context.Writer.Encoding, _htmlEncoder);
+            object obj;
+            RazorBufferScope scope;
+            bool createdScope;
+            if (context.HttpContext.Items.TryGetValue("SCOPE_BRO", out obj))
+            {
+                createdScope = false;
+                scope = (RazorBufferScope)obj;
+            }
+            else
+            {
+                createdScope = true;
+                scope = new MemoryPoolRazorBufferScope(context.HttpContext.RequestServices.GetRequiredService<IArraySegmentPool<RazorValue>>());
+                context.HttpContext.Items.Add("SCOPE_BRO", scope);
+            }
+
+            var razorTextWriter = new RazorTextWriter(context.Writer, scope, _htmlEncoder, page.Path);
             var writer = (TextWriter)razorTextWriter;
             var bufferedWriter = (IBufferedTextWriter)razorTextWriter;
 
@@ -140,6 +158,11 @@ namespace Microsoft.AspNet.Mvc.Razor
                 context.Writer = oldWriter;
                 context.ExecutingFilePath = oldFilePath;
                 writer.Dispose();
+
+                if (createdScope)
+                {
+                    scope.Dispose();
+                }
             }
         }
 
