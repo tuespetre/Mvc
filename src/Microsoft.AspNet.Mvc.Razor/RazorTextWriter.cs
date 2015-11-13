@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Html.Abstractions;
+using Microsoft.AspNet.Mvc.Internal;
+using Microsoft.AspNet.Mvc.Razor.Buffer;
 using Microsoft.AspNet.Mvc.ViewFeatures;
 
 namespace Microsoft.AspNet.Mvc.Razor
@@ -30,12 +32,12 @@ namespace Microsoft.AspNet.Mvc.Razor
         /// is no longer buffering.</param>
         /// <param name="encoding">The character <see cref="Encoding"/> in which the output is written.</param>
         /// <param name="encoder">The HTML encoder.</param>
-        public RazorTextWriter(TextWriter unbufferedWriter, Encoding encoding, HtmlEncoder encoder)
+        public RazorTextWriter(TextWriter unbufferedWriter, RazorBufferScope scope, HtmlEncoder encoder, string name)
         {
             UnbufferedWriter = unbufferedWriter;
             HtmlEncoder = encoder;
 
-            BufferedWriter = new StringCollectionTextWriter(encoding);
+            BufferedWriter = new RazorBufferTextWriter(scope.CreateBuffer(name), unbufferedWriter.Encoding);
             TargetWriter = BufferedWriter;
         }
 
@@ -49,7 +51,7 @@ namespace Microsoft.AspNet.Mvc.Razor
         public bool IsBuffering { get; private set; } = true;
 
         // Internal for unit testing
-        internal StringCollectionTextWriter BufferedWriter { get; }
+        internal RazorBufferTextWriter BufferedWriter { get; }
 
         private TextWriter UnbufferedWriter { get; }
 
@@ -213,14 +215,23 @@ namespace Microsoft.AspNet.Mvc.Razor
         public void CopyTo(TextWriter writer)
         {
             writer = UnWrapRazorTextWriter(writer);
-            BufferedWriter.CopyTo(writer, HtmlEncoder);
+
+            var htmlTextWriter = writer as HtmlTextWriter;
+            if (htmlTextWriter == null)
+            {
+                BufferedWriter.Content.WriteTo(writer, HtmlEncoder);
+            }
+            else
+            {
+                htmlTextWriter.Write(BufferedWriter.Content);
+            }
         }
 
         /// <inheritdoc />
         public Task CopyToAsync(TextWriter writer)
         {
-            writer = UnWrapRazorTextWriter(writer);
-            return BufferedWriter.CopyToAsync(writer, HtmlEncoder);
+            CopyTo(writer);
+            return TaskCache.CompletedTask;
         }
 
         private static TextWriter UnWrapRazorTextWriter(TextWriter writer)

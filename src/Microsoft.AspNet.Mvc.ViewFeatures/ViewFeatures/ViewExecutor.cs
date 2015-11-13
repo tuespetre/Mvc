@@ -9,9 +9,11 @@ using Microsoft.AspNet.Mvc.Diagnostics;
 using Microsoft.AspNet.Mvc.Infrastructure;
 using Microsoft.AspNet.Mvc.Internal;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.Razor.Buffer;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.ViewEngines;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.MemoryPool;
 using Microsoft.Extensions.OptionsModel;
 using Microsoft.Net.Http.Headers;
 
@@ -154,24 +156,31 @@ namespace Microsoft.AspNet.Mvc.ViewFeatures
 
             using (var writer = WriterFactory.CreateWriter(response.Body, resolvedContentTypeEncoding))
             {
-                var viewContext = new ViewContext(
-                    actionContext,
-                    view,
-                    viewData,
-                    tempData,
-                    writer,
-                    ViewOptions.HtmlHelperOptions);
+                using (var scope = new MemoryPoolRazorBufferScope(actionContext.HttpContext.RequestServices.GetRequiredService<IArraySegmentPool<RazorValue>>()))
+                {
+                    actionContext.HttpContext.Items.Add("SCOPE_BRO", scope);
 
-                DiagnosticSource.BeforeView(view, viewContext);
+                    var viewContext = new ViewContext(
+                        actionContext,
+                        view,
+                        viewData,
+                        tempData,
+                        writer,
+                        ViewOptions.HtmlHelperOptions);
 
-                await view.RenderAsync(viewContext);
+                    DiagnosticSource.BeforeView(view, viewContext);
 
-                DiagnosticSource.AfterView(view, viewContext);
+                    await view.RenderAsync(viewContext);
 
-                // Perf: Invoke FlushAsync to ensure any buffered content is asynchronously written to the underlying
-                // response asynchronously. In the absence of this line, the buffer gets synchronously written to the
-                // response as part of the Dispose which has a perf impact.
-                await writer.FlushAsync();
+                    DiagnosticSource.AfterView(view, viewContext);
+
+                    // Perf: Invoke FlushAsync to ensure any buffered content is asynchronously written to the underlying
+                    // response asynchronously. In the absence of this line, the buffer gets synchronously written to the
+                    // response as part of the Dispose which has a perf impact.
+                    await writer.FlushAsync();
+
+                    actionContext.HttpContext.Items.Remove("SCOPE_BRO");
+                }
             }
         }
     }

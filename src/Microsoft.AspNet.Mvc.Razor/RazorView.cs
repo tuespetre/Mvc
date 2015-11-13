@@ -6,8 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Http.Features;
+using Microsoft.AspNet.Mvc.Razor.Buffer;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.ViewEngines;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.MemoryPool;
 
 namespace Microsoft.AspNet.Mvc.Razor
 {
@@ -102,7 +106,8 @@ namespace Microsoft.AspNet.Mvc.Razor
             ViewContext context,
             IReadOnlyList<IRazorPage> viewStartPages)
         {
-            var razorTextWriter = new RazorTextWriter(context.Writer, context.Writer.Encoding, _htmlEncoder);
+            var scope = (RazorBufferScope)context.HttpContext.Items["SCOPE_BRO"];
+            var razorTextWriter = new RazorTextWriter(context.Writer, scope, _htmlEncoder, page.Path);
 
             // The writer for the body is passed through the ViewContext, allowing things like HtmlHelpers
             // and ViewComponents to reference it.

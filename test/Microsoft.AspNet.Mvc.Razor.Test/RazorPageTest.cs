@@ -11,6 +11,7 @@ using Microsoft.AspNet.Html.Abstractions;
 using Microsoft.AspNet.Http.Internal;
 using Microsoft.AspNet.Mvc.Abstractions;
 using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.Razor.Buffer;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.TestCommon;
 using Microsoft.AspNet.Mvc.ViewEngines;
@@ -1117,7 +1118,7 @@ namespace Microsoft.AspNet.Mvc.Razor
         public async Task Write_WithHtmlString_WritesValueWithoutEncoding()
         {
             // Arrange
-            var writer = new RazorTextWriter(TextWriter.Null, Encoding.UTF8, new HtmlTestEncoder());
+            var writer = new RazorTextWriter(TextWriter.Null, new TestRazorBufferScope(), new HtmlTestEncoder());
 
             var page = CreatePage(p =>
             {
@@ -1129,9 +1130,7 @@ namespace Microsoft.AspNet.Mvc.Razor
             await page.ExecuteAsync();
 
             // Assert
-            var buffer = writer.BufferedWriter.Entries;
-            Assert.Equal(1, buffer.Count);
-            Assert.Equal("Hello world", HtmlContentUtilities.HtmlContentToString(((IHtmlContent)buffer[0])));
+            Assert.Equal("Hello world", HtmlContentUtilities.HtmlContentToString(writer.BufferedWriter.Content));
         }
 
         private static TestableRazorPage CreatePage(
