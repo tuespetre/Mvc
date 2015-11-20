@@ -22,9 +22,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             {
                 throw new ArgumentNullException(nameof(context));
             }
-
             var errorMessage = GetErrorMessage(context.ModelMetadata);
             return new[] { new ModelClientValidationRangeRule(errorMessage, Attribute.Minimum, Attribute.Maximum) };
+        }
+
+        public virtual string GetErrorMessage(ModelMetadata metadata)
+        {
+            return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.Minimum, Attribute.Maximum);
         }
     }
 }

@@ -261,12 +261,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var container = "Hello";
             var model = container.Length;
 
-            var attribute = new Mock<ValidationAttribute> { CallBase = true };
+            var attribute = new Mock<MaxLengthAttribute> { CallBase = true };
             attribute.Setup(a => a.IsValid(model)).Returns(false);
+            attribute.SetupProperty(s => s.Length, 4);
 
             attribute.Object.ErrorMessage = "Length";
 
-            var localizedString = new LocalizedString("Length", "Longueur est invalide");
+            var localizedString = new LocalizedString("Length", "Longueur est invalide : {0}");
             var stringLocalizer = new Mock<IStringLocalizer>();
             stringLocalizer.Setup(s => s["Length", It.IsAny<object[]>()]).Returns(localizedString);
 
@@ -284,7 +285,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Assert
             var validationResult = result.Single();
             Assert.Equal("", validationResult.MemberName);
-            Assert.Equal("Longueur est invalide", validationResult.Message);
+            Assert.Equal("Longueur est invalide 4", validationResult.Message);
         }
 
         private class DerivedRequiredAttribute : RequiredAttribute

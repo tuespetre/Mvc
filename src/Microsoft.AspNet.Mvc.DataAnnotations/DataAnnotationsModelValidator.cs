@@ -9,6 +9,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
+
     public class DataAnnotationsModelValidator : IModelValidator
     {
         private IStringLocalizer _stringLocalizer;
@@ -25,6 +26,114 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         }
 
         public ValidationAttribute Attribute { get; }
+
+        private IDictionary<Type, Func<ModelMetadata, string>> _errorDict {
+            get{ return BuildErrorMessageDict(); } }
+
+        private IDictionary<Type, Func<ModelMetadata, string>> BuildErrorMessageDict()
+        {
+            return new Dictionary<Type, Func<ModelMetadata, string>>{
+                {
+                    typeof(RangeAttribute), (modelMetadata) =>
+                    {
+                        return new RangeAttributeAdapter((RangeAttribute)Attribute, _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(RequiredAttribute), (modelMetadata) =>
+                    {
+                        return new RequiredAttributeAdapter((RequiredAttribute)Attribute, _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(MaxLengthAttribute), (modelMetadata) =>
+                    {
+                        return new MaxLengthAttributeAdapter((MaxLengthAttribute)Attribute, _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(MinLengthAttribute), (modelMetadata) =>
+                    {
+                        return new MinLengthAttributeAdapter((MinLengthAttribute)Attribute, _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(RegularExpressionAttribute), (modelMetadata) =>
+                    {
+                        return new RegularExpressionAttributeAdapter((RegularExpressionAttribute)Attribute, _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(CompareAttribute), (modelMetadata) =>
+                    {
+                        return new CompareAttributeAdapter((CompareAttribute)Attribute, _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(StringLengthAttribute), (modelMetadata) =>
+                    {
+                        return new StringLengthAttributeAdapter((StringLengthAttribute)Attribute, _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(CreditCardAttribute), (modelMetadata) =>
+                    {
+                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "creditcard", _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(EmailAddressAttribute), (modelMetadata) =>
+                    {
+                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "email", _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(PhoneAttribute), (modelMetadata) =>
+                    {
+                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "phone", _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                },
+                {
+                    typeof(UrlAttribute), (modelMetadata) =>
+                    {
+                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "url", _stringLocalizer)
+                            .GetErrorMessage(modelMetadata);
+                    }
+                }
+        };
+    }
+
+        private string GetErrorMessage(ModelMetadata metadata)
+        {
+            if (Attribute == null)
+            {
+                throw new ArgumentNullException(nameof(Attribute));
+            }
+
+            var attrType = Attribute.GetType();
+
+            var dict = BuildErrorMessageDict();
+
+            if(dict.ContainsKey(attrType))
+            {
+                var func = dict[attrType];
+                return func(metadata);
+            }
+            else
+            {
+                throw new NotImplementedException($"Error message localizer not defined for {attrType.Name}");
+            }
+        }
 
         public IEnumerable<ModelValidationResult> Validate(ModelValidationContext validationContext)
         {
@@ -61,8 +170,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     string.IsNullOrEmpty(Attribute.ErrorMessageResourceName) &&
                     Attribute.ErrorMessageResourceType == null)
                 {
-                    var displayName = validationContext.Metadata.GetDisplayName();
-                    errorMessage = _stringLocalizer[Attribute.ErrorMessage, displayName];
+                    errorMessage = GetErrorMessage(metadata);
                 }
 
                 var validationResult = new ModelValidationResult(errorMemberName, errorMessage ?? result.ErrorMessage);

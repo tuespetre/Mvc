@@ -26,5 +26,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var message = GetErrorMessage(context.ModelMetadata);
             return new[] { new ModelClientValidationMaxLengthRule(message, Attribute.Length) };
         }
+
+        public string GetErrorMessage(ModelMetadata metadata)
+        {
+            return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.Length);
+        }
     }
 }
