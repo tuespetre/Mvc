@@ -34,6 +34,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { clientRule };
         }
 
+        public string GetErrorMessage(ModelMetadata metadata)
+        {
+            //TODO: How to get around the need for a ModelMetadataProvider
+            throw new NotImplementedException();
+        }
+
         private static string FormatPropertyForClientValidation(string property)
         {
             return "*." + property;
@@ -69,10 +75,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             private string GetOtherPropertyDisplayName(ClientModelValidationContext context)
             {
+                var metadata = context.ModelMetadata;
                 // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the
                 // OtherPropertyDisplayName until after IsValid() is called. Therefore, by the time we get
                 // the error message for client validation, the display name is not populated and won't be used.
-                var metadata = context.ModelMetadata;
                 var otherPropertyDisplayName = OtherPropertyDisplayName;
                 if (otherPropertyDisplayName == null && metadata.ContainerType != null)
                 {

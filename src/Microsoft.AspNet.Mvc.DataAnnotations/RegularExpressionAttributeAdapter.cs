@@ -26,5 +26,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var errorMessage = GetErrorMessage(context.ModelMetadata);
             return new[] { new ModelClientValidationRegexRule(errorMessage, Attribute.Pattern) };
         }
+
+        public string GetErrorMessage(ModelMetadata metadata)
+        {
+            return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.Pattern);
+        }
     }
 }

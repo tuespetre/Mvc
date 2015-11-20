@@ -29,5 +29,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                                                                  Attribute.MaximumLength);
             return new[] { rule };
         }
+
+        public string GetErrorMessage(ModelMetadata metadata)
+        {
+            return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.MinimumLength, Attribute.MaximumLength);
+        }
     }
 }
