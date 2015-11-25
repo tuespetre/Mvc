@@ -32,7 +32,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
         public string GetErrorMessage(ModelMetadata metadata)
         {
-            return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.MinimumLength, Attribute.MaximumLength);
+            return GetErrorMessage(
+                metadata,
+                metadata.GetDisplayName(),
+                Attribute.MinimumLength,
+                Attribute.MaximumLength);
         }
     }
 }

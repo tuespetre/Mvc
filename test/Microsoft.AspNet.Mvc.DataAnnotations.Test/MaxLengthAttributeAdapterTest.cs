@@ -77,7 +77,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             attribute.ErrorMessage = errorKey;
             var localizedString = new LocalizedString(errorKey, "Longueur est invalide");
             var stringLocalizer = new Mock<IStringLocalizer>();
-            stringLocalizer.Setup(s => s[errorKey, It.IsAny<object[]>()]).Returns(localizedString);
+            stringLocalizer.Setup(s => s[errorKey, metadata.GetDisplayName(), attribute.Length]).Returns(localizedString);
 
             var adapter = new MaxLengthAttributeAdapter(attribute, stringLocalizer.Object);
 

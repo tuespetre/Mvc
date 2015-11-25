@@ -28,16 +28,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var errorMessage = ((CompareAttributeWrapper)Attribute).FormatErrorMessage(context);
+            var errorMessage = GetErrorMessage(context.ModelMetadata, context.MetadataProvider);
             var clientRule = new ModelClientValidationEqualToRule(errorMessage,
                                                             FormatPropertyForClientValidation(Attribute.OtherProperty));
             return new[] { clientRule };
         }
 
-        public string GetErrorMessage(ModelMetadata metadata)
+        public string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metdataProvider)
         {
-            //TODO: How to get around the need for a ModelMetadataProvider
-            throw new NotImplementedException();
+            return ((CompareAttributeWrapper)Attribute).FormatErrorMessage(metadata, metdataProvider);
         }
 
         private static string FormatPropertyForClientValidation(string property)
@@ -64,25 +63,25 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 }
             }
 
-            public string FormatErrorMessage(ClientModelValidationContext context)
+            public string FormatErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
             {
-                var displayName = context.ModelMetadata.GetDisplayName();
+                
+                var displayName = metadata.GetDisplayName();
                 return string.Format(CultureInfo.CurrentCulture,
                                      ErrorMessageString,
                                      displayName,
-                                     GetOtherPropertyDisplayName(context));
+                                     GetOtherPropertyDisplayName(metadata, metadataProvider));
             }
 
-            private string GetOtherPropertyDisplayName(ClientModelValidationContext context)
+            private string GetOtherPropertyDisplayName(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
             {
-                var metadata = context.ModelMetadata;
                 // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the
                 // OtherPropertyDisplayName until after IsValid() is called. Therefore, by the time we get
                 // the error message for client validation, the display name is not populated and won't be used.
                 var otherPropertyDisplayName = OtherPropertyDisplayName;
                 if (otherPropertyDisplayName == null && metadata.ContainerType != null)
                 {
-                    var otherProperty = context.MetadataProvider.GetMetadataForProperty(
+                    var otherProperty = metadataProvider.GetMetadataForProperty(
                         metadata.ContainerType,
                         OtherProperty);
                     if (otherProperty != null)

@@ -27,10 +27,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
         public ValidationAttribute Attribute { get; }
 
-        private IDictionary<Type, Func<ModelMetadata, string>> _errorDict {
-            get{ return BuildErrorMessageDict(); } }
-
-        private IDictionary<Type, Func<ModelMetadata, string>> BuildErrorMessageDict()
+        private IDictionary<Type, Func<ModelMetadata, string>> BuildErrorMessageDict(
+            IModelMetadataProvider metadataProvider)
         {
             return new Dictionary<Type, Func<ModelMetadata, string>>{
                 {
@@ -72,7 +70,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     typeof(CompareAttribute), (modelMetadata) =>
                     {
                         return new CompareAttributeAdapter((CompareAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
+                            .GetErrorMessage(modelMetadata, metadataProvider);
+                        
                     }
                 },
                 {
@@ -113,16 +112,17 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         };
     }
 
-        private string GetErrorMessage(ModelMetadata metadata)
+        private string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
         {
             if (Attribute == null)
             {
                 throw new ArgumentNullException(nameof(Attribute));
             }
+            
 
             var attrType = Attribute.GetType();
 
-            var dict = BuildErrorMessageDict();
+            var dict = BuildErrorMessageDict(metadataProvider);
 
             if(dict.ContainsKey(attrType))
             {
@@ -140,12 +140,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var metadata = validationContext.Metadata;
             var memberName = metadata.PropertyName ?? metadata.ModelType.Name;
             var container = validationContext.Container;
-
+            
             var context = new ValidationContext(container ?? validationContext.Model)
             {
                 DisplayName = metadata.GetDisplayName(),
                 MemberName = memberName
             };
+            
+            var metadataProvider = (IModelMetadataProvider)context.GetService(typeof(IModelMetadataProvider));
 
             var result = Attribute.GetValidationResult(validationContext.Model, context);
             if (result != ValidationResult.Success)
@@ -170,7 +172,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     string.IsNullOrEmpty(Attribute.ErrorMessageResourceName) &&
                     Attribute.ErrorMessageResourceType == null)
                 {
-                    errorMessage = GetErrorMessage(metadata);
+
+                    errorMessage = GetErrorMessage(metadata, metadataProvider);
                 }
 
                 var validationResult = new ModelValidationResult(errorMemberName, errorMessage ?? result.ErrorMessage);
