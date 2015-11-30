@@ -59,7 +59,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             {
                 return _stringLocalizer[Attribute.ErrorMessage, arguments];
             }
-            
+
             return Attribute.FormatErrorMessage(modelMetadata.GetDisplayName());
         }
     }

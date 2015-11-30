@@ -65,7 +65,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             public string FormatErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
             {
-                
+
                 var displayName = metadata.GetDisplayName();
                 return string.Format(CultureInfo.CurrentCulture,
                                      ErrorMessageString,

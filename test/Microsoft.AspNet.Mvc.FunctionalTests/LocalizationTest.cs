@@ -84,10 +84,10 @@ mypartial
                     "Learn More" + Environment.NewLine +
                     "Hi John      ! You are in 2015 year and today is Thursday";
 
-                yield return new[] {"en-GB", expected1 };
+                yield return new[] { "en-GB", expected1 };
 
                 var expected2 =
-                    "Bonjour!" + Environment.NewLine + 
+                    "Bonjour!" + Environment.NewLine +
                     "apprendre Encore Plus" + Environment.NewLine +
                     "Salut John      ! Vous êtes en 2015 an aujourd'hui est Thursday";
                 yield return new[] { "fr", expected2 };
