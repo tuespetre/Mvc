@@ -259,24 +259,20 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Arrange
             var metadata = _metadataProvider.GetMetadataForType(typeof(string));
             var container = "Hello";
-            var model = container.Length;
 
-            var attribute = new Mock<MaxLengthAttribute> { CallBase = true };
-            attribute.Setup(a => a.IsValid(model)).Returns(false);
-            attribute.SetupProperty(s => s.Length, 4);
+            var attribute = new MaxLengthAttribute(4);
+            attribute.ErrorMessage = "Length";
 
-            attribute.Object.ErrorMessage = "Length";
-
-            var localizedString = new LocalizedString("Length", "Longueur est invalide : {0}");
+            var localizedString = new LocalizedString("Length", "Longueur est invalide : 4");
             var stringLocalizer = new Mock<IStringLocalizer>();
             stringLocalizer.Setup(s => s["Length", It.IsAny<object[]>()]).Returns(localizedString);
 
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer.Object);
+            var validator = new DataAnnotationsModelValidator(attribute, stringLocalizer.Object);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,
                 Container = container,
-                Model = model,
+                Model = "abcde",
             };
 
             // Act
@@ -285,11 +281,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Assert
             var validationResult = result.Single();
             Assert.Equal("", validationResult.MemberName);
-            Assert.Equal("Longueur est invalide 4", validationResult.Message);
-        }
-
-        private class DerivedRequiredAttribute : RequiredAttribute
-        {
+            Assert.Equal("Longueur est invalide : 4", validationResult.Message);
         }
 
         public abstract class TestableValidationAttribute : ValidationAttribute
