@@ -21,10 +21,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return new[] { new ModelClientValidationNumericRule(GetErrorMessage(context.ModelMetadata)) };
+            return new[] { new ModelClientValidationNumericRule(GetErrorMessage(context.ModelMetadata, null)) };
         }
 
-        private string GetErrorMessage(ModelMetadata modelMetadata)
+        private string GetErrorMessage(ModelMetadata modelMetadata, IModelMetadataProvider metadataProvider)
         {
             if (modelMetadata == null)
             {

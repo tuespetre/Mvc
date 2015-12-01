@@ -21,7 +21,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var attribute = new RequiredAttribute();
 
             // Act
-            var validator = new DataAnnotationsModelValidator(attribute, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute,
+                stringLocalizer: null,
+                modelMetadataProvider: _metadataProvider);
 
             // Assert
             Assert.Same(attribute, validator.Attribute);
@@ -67,7 +70,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 })
                 .Returns(ValidationResult.Success)
                 .Verifiable();
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute.Object,
+                stringLocalizer: null,
+                modelMetadataProvider: null);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,
@@ -94,7 +100,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var attribute = new Mock<ValidationAttribute> { CallBase = true };
             attribute.Setup(a => a.IsValid(model)).Returns(true);
 
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute.Object,
+                stringLocalizer: null,
+                modelMetadataProvider: null);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,
@@ -120,7 +129,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var attribute = new Mock<ValidationAttribute> { CallBase = true };
             attribute.Setup(a => a.IsValid(model)).Returns(false);
 
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute.Object,
+                stringLocalizer: null,
+                modelMetadataProvider: _metadataProvider);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,
@@ -149,7 +161,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             attribute
                 .Setup(p => p.IsValidPublic(It.IsAny<object>(), It.IsAny<ValidationContext>()))
                 .Returns(ValidationResult.Success);
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute.Object,
+                stringLocalizer: null,
+                modelMetadataProvider: _metadataProvider);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,
@@ -178,7 +193,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             attribute
                  .Setup(p => p.IsValidPublic(It.IsAny<object>(), It.IsAny<ValidationContext>()))
                  .Returns(new ValidationResult(errorMessage, memberNames: null));
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute.Object,
+                stringLocalizer: null,
+                modelMetadataProvider: _metadataProvider);
 
             var validationContext = new ModelValidationContext()
             {
@@ -210,7 +228,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                  .Setup(p => p.IsValidPublic(It.IsAny<object>(), It.IsAny<ValidationContext>()))
                  .Returns(new ValidationResult(errorMessage, new[] { "FirstName" }));
 
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute.Object,
+                stringLocalizer: null,
+                modelMetadataProvider: _metadataProvider);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,
@@ -238,7 +259,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                  .Setup(p => p.IsValidPublic(It.IsAny<object>(), It.IsAny<ValidationContext>()))
                  .Returns(new ValidationResult("Name error", new[] { "Name" }));
 
-            var validator = new DataAnnotationsModelValidator(attribute.Object, stringLocalizer: null);
+            var validator = new DataAnnotationsModelValidator(
+                attribute.Object,
+                stringLocalizer: null,
+                modelMetadataProvider: _metadataProvider);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,
@@ -267,7 +291,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var stringLocalizer = new Mock<IStringLocalizer>();
             stringLocalizer.Setup(s => s["Length", It.IsAny<object[]>()]).Returns(localizedString);
 
-            var validator = new DataAnnotationsModelValidator(attribute, stringLocalizer.Object);
+            var validator = new DataAnnotationsModelValidator(
+                attribute,
+                stringLocalizer.Object,
+                _metadataProvider);
             var validationContext = new ModelValidationContext()
             {
                 Metadata = metadata,

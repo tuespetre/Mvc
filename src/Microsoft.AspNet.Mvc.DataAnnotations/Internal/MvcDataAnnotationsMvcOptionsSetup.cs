@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,13 +26,15 @@ namespace Microsoft.AspNet.Mvc.DataAnnotations.Internal
             var dataAnnotationLocalizationOptions =
                 serviceProvider.GetRequiredService<IOptions<MvcDataAnnotationsLocalizationOptions>>();
 
+            var modelMetadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             // This service will be registered only if AddDataAnnotationsLocalization() is added to service collection.
             var stringLocalizerFactory = serviceProvider.GetService<IStringLocalizerFactory>();
 
             options.ModelMetadataDetailsProviders.Add(new DataAnnotationsMetadataProvider());
             options.ModelValidatorProviders.Add(new DataAnnotationsModelValidatorProvider(
                 dataAnnotationLocalizationOptions,
-                stringLocalizerFactory));
+                stringLocalizerFactory,
+                modelMetadataProvider));
         }
     }
 }

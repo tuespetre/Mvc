@@ -5,26 +5,32 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.OptionsModel;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
     /// <summary>
+    /// A factory for validators based on ValidationAttribute.
+    /// </summary>
+    /// <param name="attribute"></param>
+    /// <param name="stringLocalizer"></param>
+    /// <returns></returns>
+    public delegate IAttributeAdapter ValidationAttributeAdapterFactory(
+        ValidationAttribute attribute,
+        IStringLocalizer stringLocalizer);
+
+    /// <summary>
     /// An implementation of <see cref="IClientModelValidatorProvider"/> which provides client validators
     /// for attributes which derive from <see cref="ValidationAttribute"/>. It also provides
     /// a validator for types which implement <see cref="IClientModelValidator"/>.
     /// The logic to support <see cref="IClientModelValidator"/>
-    /// is implemented in <see cref="DataAnnotationsClientModelValidator{}"/>.
+    /// is implemented in <see cref="ValidationAttributeAdapter{}"/>.
     /// </summary>
     public class DataAnnotationsClientModelValidatorProvider : IClientModelValidatorProvider
     {
-        // A factory for validators based on ValidationAttribute.
-        internal delegate IClientModelValidator DataAnnotationsClientModelValidationFactory(
-            ValidationAttribute attribute,
-            IStringLocalizer stringLocalizer);
-
-        private readonly Dictionary<Type, DataAnnotationsClientModelValidationFactory> _attributeFactories =
+        private readonly Dictionary<Type, ValidationAttributeAdapterFactory> _attributeFactories =
             BuildAttributeFactoriesDictionary();
         private readonly IOptions<MvcDataAnnotationsLocalizationOptions> _options;
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
@@ -40,11 +46,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         {
             _options = options;
             _stringLocalizerFactory = stringLocalizerFactory;
-        }
-
-        internal Dictionary<Type, DataAnnotationsClientModelValidationFactory> AttributeFactories
-        {
-            get { return _attributeFactories; }
         }
 
         /// <inheritdoc />
@@ -70,7 +71,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             {
                 hasRequiredAttribute |= attribute is RequiredAttribute;
 
-                DataAnnotationsClientModelValidationFactory factory;
+                ValidationAttributeAdapterFactory factory;
                 if (_attributeFactories.TryGetValue(attribute.GetType(), out factory))
                 {
                     context.Validators.Add(factory(attribute, stringLocalizer));
@@ -84,81 +85,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             }
         }
 
-        private static Dictionary<Type, DataAnnotationsClientModelValidationFactory> BuildAttributeFactoriesDictionary()
+        private static Dictionary<Type, ValidationAttributeAdapterFactory> BuildAttributeFactoriesDictionary()
         {
-            return new Dictionary<Type, DataAnnotationsClientModelValidationFactory>()
-            {
-                {
-                    typeof(RegularExpressionAttribute),
-                    (attribute, stringLocalizer) => new RegularExpressionAttributeAdapter(
-                        (RegularExpressionAttribute)attribute,
-                        stringLocalizer)
-                },
-                {
-                    typeof(MaxLengthAttribute),
-                    (attribute, stringLocalizer) => new MaxLengthAttributeAdapter(
-                        (MaxLengthAttribute)attribute,
-                        stringLocalizer)
-                },
-                {
-                    typeof(MinLengthAttribute),
-                    (attribute, stringLocalizer) => new MinLengthAttributeAdapter(
-                        (MinLengthAttribute)attribute,
-                        stringLocalizer)
-                },
-                {
-                    typeof(CompareAttribute),
-                    (attribute, stringLocalizer) => new CompareAttributeAdapter(
-                        (CompareAttribute)attribute,
-                        stringLocalizer)
-                },
-                {
-                    typeof(RequiredAttribute),
-                    (attribute, stringLocalizer) => new RequiredAttributeAdapter(
-                        (RequiredAttribute)attribute,
-                        stringLocalizer)
-                },
-                {
-                    typeof(RangeAttribute),
-                    (attribute, stringLocalizer) => new RangeAttributeAdapter(
-                        (RangeAttribute)attribute,
-                        stringLocalizer)
-                },
-                {
-                    typeof(StringLengthAttribute),
-                    (attribute, stringLocalizer) => new StringLengthAttributeAdapter(
-                        (StringLengthAttribute)attribute,
-                        stringLocalizer)
-                },
-                {
-                    typeof(CreditCardAttribute),
-                    (attribute, stringLocalizer) => new DataTypeAttributeAdapter(
-                        (DataTypeAttribute)attribute,
-                        "creditcard",
-                        stringLocalizer)
-                },
-                {
-                    typeof(EmailAddressAttribute),
-                    (attribute, stringLocalizer) => new DataTypeAttributeAdapter(
-                        (DataTypeAttribute)attribute,
-                        "email",
-                        stringLocalizer)
-                },
-                {
-                    typeof(PhoneAttribute),
-                    (attribute, stringLocalizer) => new DataTypeAttributeAdapter(
-                        (DataTypeAttribute)attribute,
-                        "phone",
-                        stringLocalizer)
-                },
-                {
-                    typeof(UrlAttribute),
-                    (attribute, stringLocalizer) => new DataTypeAttributeAdapter(
-                        (DataTypeAttribute)attribute,
-                        "url",
-                        stringLocalizer)
-                }
-            };
+            return ValidationAttributeAdapterTable.AttributeFactories;
         }
     }
 }

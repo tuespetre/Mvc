@@ -4,11 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.Extensions.Localization;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
-    public class RangeAttributeAdapter : DataAnnotationsClientModelValidator<RangeAttribute>
+    public class RangeAttributeAdapter : AttributeAdapterBase<RangeAttribute>
     {
         public RangeAttributeAdapter(RangeAttribute attribute, IStringLocalizer stringLocalizer)
             : base(attribute, stringLocalizer)
@@ -26,7 +27,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { new ModelClientValidationRangeRule(errorMessage, Attribute.Minimum, Attribute.Maximum) };
         }
 
-        public virtual string GetErrorMessage(ModelMetadata metadata)
+        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
         {
             return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.Minimum, Attribute.Maximum);
         }

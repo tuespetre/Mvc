@@ -13,7 +13,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     /// A validation adapter that is used to map <see cref="DataTypeAttribute"/>'s to a single client side validation
     /// rule.
     /// </summary>
-    public class DataTypeAttributeAdapter : DataAnnotationsClientModelValidator<DataTypeAttribute>
+    public class DataTypeAttributeAdapter : AttributeAdapterBase<DataTypeAttribute>
     {
         public DataTypeAttributeAdapter(DataTypeAttribute attribute, string ruleName, IStringLocalizer stringLocalizer)
             : base(attribute, stringLocalizer)
@@ -40,7 +40,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { new ModelClientValidationRule(RuleName, errorMessage) };
         }
 
-        public string GetErrorMessage(ModelMetadata metadata)
+        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
         {
             return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.GetDataTypeName());
         }

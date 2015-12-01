@@ -4,11 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.Extensions.Localization;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
-    public class StringLengthAttributeAdapter : DataAnnotationsClientModelValidator<StringLengthAttribute>
+    public class StringLengthAttributeAdapter : AttributeAdapterBase<StringLengthAttribute>
     {
         public StringLengthAttributeAdapter(StringLengthAttribute attribute, IStringLocalizer stringLocalizer)
             : base(attribute, stringLocalizer)
@@ -30,7 +31,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { rule };
         }
 
-        public string GetErrorMessage(ModelMetadata metadata)
+        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
         {
             return GetErrorMessage(
                 metadata,

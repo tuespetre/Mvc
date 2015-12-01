@@ -5,16 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.Extensions.Localization;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
-
+    /// <summary>
+    /// Provides server-side validation of Models
+    /// </summary>
     public class DataAnnotationsModelValidator : IModelValidator
     {
         private IStringLocalizer _stringLocalizer;
+        private IModelMetadataProvider _modelMetadataProvider;
 
-        public DataAnnotationsModelValidator(ValidationAttribute attribute, IStringLocalizer stringLocalizer)
+        public DataAnnotationsModelValidator(
+            ValidationAttribute attribute,
+            IStringLocalizer stringLocalizer,
+            IModelMetadataProvider modelMetadataProvider)
         {
             if (attribute == null)
             {
@@ -23,119 +30,18 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             Attribute = attribute;
             _stringLocalizer = stringLocalizer;
+            _modelMetadataProvider = modelMetadataProvider;
         }
-
+        /// <summary>
+        /// The attribute being validated against.
+        /// </summary>
         public ValidationAttribute Attribute { get; }
 
-        private IDictionary<Type, Func<ModelMetadata, string>> BuildErrorMessageDict(
-            IModelMetadataProvider metadataProvider)
-        {
-            return new Dictionary<Type, Func<ModelMetadata, string>>
-            {
-                {
-                    typeof(RangeAttribute), (modelMetadata) =>
-                    {
-                        return new RangeAttributeAdapter((RangeAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(RequiredAttribute), (modelMetadata) =>
-                    {
-                        return new RequiredAttributeAdapter((RequiredAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(MaxLengthAttribute), (modelMetadata) =>
-                    {
-                        return new MaxLengthAttributeAdapter((MaxLengthAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(MinLengthAttribute), (modelMetadata) =>
-                    {
-                        return new MinLengthAttributeAdapter((MinLengthAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(RegularExpressionAttribute), (modelMetadata) =>
-                    {
-                        return new RegularExpressionAttributeAdapter((RegularExpressionAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(CompareAttribute), (modelMetadata) =>
-                    {
-                        return new CompareAttributeAdapter((CompareAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata, metadataProvider);
-
-                    }
-                },
-                {
-                    typeof(StringLengthAttribute), (modelMetadata) =>
-                    {
-                        return new StringLengthAttributeAdapter((StringLengthAttribute)Attribute, _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(CreditCardAttribute), (modelMetadata) =>
-                    {
-                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "creditcard", _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(EmailAddressAttribute), (modelMetadata) =>
-                    {
-                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "email", _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(PhoneAttribute), (modelMetadata) =>
-                    {
-                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "phone", _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                },
-                {
-                    typeof(UrlAttribute), (modelMetadata) =>
-                    {
-                        return new DataTypeAttributeAdapter((DataTypeAttribute)Attribute, "url", _stringLocalizer)
-                            .GetErrorMessage(modelMetadata);
-                    }
-                }
-            };
-        }
-
-        private string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
-        {
-            if (Attribute == null)
-            {
-                throw new ArgumentNullException(nameof(Attribute));
-            }
-
-
-            var attrType = Attribute.GetType();
-
-            var dict = BuildErrorMessageDict(metadataProvider);
-
-            if (dict.ContainsKey(attrType))
-            {
-                var func = dict[attrType];
-                return func(metadata);
-            }
-            else
-            {
-                throw new NotImplementedException($"Error message localizer not defined for {attrType.Name}");
-            }
-        }
-
+        /// <summary>
+        /// Validates the context against the Attribute.
+        /// </summary>
+        /// <param name="validationContext">The context being validated.</param>
+        /// <returns>An enumerable of the validation results.</returns>
         public IEnumerable<ModelValidationResult> Validate(ModelValidationContext validationContext)
         {
             var metadata = validationContext.Metadata;
@@ -148,7 +54,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 MemberName = memberName
             };
 
-            var metadataProvider = (IModelMetadataProvider)context.GetService(typeof(IModelMetadataProvider));
+            var metadataProvider = _modelMetadataProvider;
 
             var result = Attribute.GetValidationResult(validationContext.Model, context);
             if (result != ValidationResult.Success)
@@ -182,6 +88,30 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             }
 
             return Enumerable.Empty<ModelValidationResult>();
+        }
+
+        private static IDictionary<Type, ValidationAttributeAdapterFactory> AttributeAdapters =
+            ValidationAttributeAdapterTable.AttributeFactories;
+
+        private string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        {
+            if (Attribute == null)
+            {
+                throw new ArgumentNullException(nameof(Attribute));
+            }
+
+            var attrType = Attribute.GetType();
+            ValidationAttributeAdapterFactory factory;
+
+            if (AttributeAdapters.TryGetValue(attrType, out factory))
+            {
+                var t = factory(Attribute, _stringLocalizer);
+                return t.GetErrorMessage(metadata, _modelMetadataProvider);
+            }
+            else
+            {
+                throw new NotImplementedException($"Error message localizer not defined for {attrType.Name}");
+            }
         }
     }
 }

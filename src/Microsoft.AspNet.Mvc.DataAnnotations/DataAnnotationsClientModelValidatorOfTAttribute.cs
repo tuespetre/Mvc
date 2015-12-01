@@ -12,16 +12,16 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     /// An implementation of <see cref="IClientModelValidator"/> which understands data annotation attributes.
     /// </summary>
     /// <typeparam name="TAttribute">The type of the attribute.</typeparam>
-    public abstract class DataAnnotationsClientModelValidator<TAttribute> : IClientModelValidator
+    public abstract class ValidationAttributeAdapter<TAttribute> : IClientModelValidator
         where TAttribute : ValidationAttribute
     {
         private readonly IStringLocalizer _stringLocalizer;
         /// <summary>
-        /// Create a new instance of <see cref="DataAnnotationsClientModelValidator{TAttribute}"/>.
+        /// Create a new instance of <see cref="ValidationAttributeAdapter{TAttribute}"/>.
         /// </summary>
         /// <param name="attribute">The <typeparamref name="TAttribute"/> instance to validate.</param>
         /// <param name="stringLocalizer">The <see cref="IStringLocalizer"/>.</param>
-        public DataAnnotationsClientModelValidator(TAttribute attribute, IStringLocalizer stringLocalizer)
+        public ValidationAttributeAdapter(TAttribute attribute, IStringLocalizer stringLocalizer)
         {
             Attribute = attribute;
             _stringLocalizer = stringLocalizer;
