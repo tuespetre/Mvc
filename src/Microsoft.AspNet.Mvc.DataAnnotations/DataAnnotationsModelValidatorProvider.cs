@@ -19,6 +19,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     {
         private readonly IOptions<MvcDataAnnotationsLocalizationOptions> _options;
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
+        private readonly IModelMetadataProvider _modelMetadataProvider;
 
         /// <summary>
         /// Create a new instance of <see cref="DataAnnotationsModelValidatorProvider"/>.
@@ -27,10 +28,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// <param name="stringLocalizerFactory">The <see cref="IStringLocalizerFactory"/>.</param>
         public DataAnnotationsModelValidatorProvider(
             IOptions<MvcDataAnnotationsLocalizationOptions> options,
-            IStringLocalizerFactory stringLocalizerFactory)
+            IStringLocalizerFactory stringLocalizerFactory,
+            IModelMetadataProvider modelMetadataProvider)
         {
             _options = options;
             _stringLocalizerFactory = stringLocalizerFactory;
+            _modelMetadataProvider = modelMetadataProvider;
         }
 
         public void GetValidators(ModelValidatorProviderContext context)
@@ -51,7 +54,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     continue;
                 }
 
-                var validator = new DataAnnotationsModelValidator(attribute, stringLocalizer);
+                var validator = new DataAnnotationsModelValidator(
+                    attribute,
+                    stringLocalizer,
+                    _modelMetadataProvider);
 
                 // Inserts validators based on whether or not they are 'required'. We want to run
                 // 'required' validators first so that we get the best possible error message.

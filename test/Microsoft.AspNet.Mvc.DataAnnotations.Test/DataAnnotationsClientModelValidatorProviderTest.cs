@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
@@ -128,10 +129,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             Type expectedAdapterType)
         {
             // Arrange
-            var adapters = new DataAnnotationsClientModelValidatorProvider(
-                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null)
-                .AttributeFactories;
+            var adapters = ValidationAttributeAdapterTable.AttributeFactories;
             var adapterFactory = adapters.Single(kvp => kvp.Key == attribute.GetType()).Value;
 
             // Act
@@ -159,10 +157,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             string expectedRuleName)
         {
             // Arrange
-            var adapters = new DataAnnotationsClientModelValidatorProvider(
-                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null)
-                .AttributeFactories;
+            var adapters = ValidationAttributeAdapterTable.AttributeFactories;
             var adapterFactory = adapters.Single(kvp => kvp.Key == attribute.GetType()).Value;
 
             // Act

@@ -73,9 +73,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                modelMetadataProvider: null);
             var model = new MyModel();
-            
+
             var values = new Dictionary<string, object>
             {
                 { "", null }
@@ -116,7 +117,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                modelMetadataProvider: null);
             var model = new MyModel { MyProperty = "Old-Value" };
 
             var values = new Dictionary<string, object>
@@ -190,13 +192,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
-            var model = new MyModel {
+                stringLocalizerFactory: null,
+                modelMetadataProvider: null);
+            var model = new MyModel
+            {
                 MyProperty = "Old-Value",
                 IncludedProperty = "Old-IncludedPropertyValue",
                 ExcludedProperty = "Old-ExcludedPropertyValue"
             };
-            
+
             var values = new Dictionary<string, object>
             {
                 { "", null },
@@ -256,7 +260,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
                 new List<IInputFormatter>(),
                 new Mock<IObjectModelValidator>(MockBehavior.Strict).Object,
                 Mock.Of<IModelValidatorProvider>(),
-                m => m.IncludedProperty );
+                m => m.IncludedProperty);
 
             // Assert
             Assert.False(result);
@@ -277,14 +281,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                modelMetadataProvider: null);
             var model = new MyModel
             {
                 MyProperty = "Old-Value",
                 IncludedProperty = "Old-IncludedPropertyValue",
                 ExcludedProperty = "Old-ExcludedPropertyValue"
             };
-            
+
             var values = new Dictionary<string, object>
             {
                 { "", null },
@@ -329,14 +334,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                modelMetadataProvider: null);
             var model = new MyModel
             {
                 MyProperty = "Old-Value",
                 IncludedProperty = "Old-IncludedPropertyValue",
                 ExcludedProperty = "Old-ExcludedPropertyValue"
             };
-            
+
             var values = new Dictionary<string, object>
             {
                 { "", null },
@@ -534,14 +540,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                modelMetadataProvider: null);
             var model = new MyModel
             {
                 MyProperty = "Old-Value",
                 IncludedProperty = "Old-IncludedPropertyValue",
                 ExcludedProperty = "Old-ExcludedPropertyValue"
             };
-            
+
             var values = new Dictionary<string, object>
             {
                 { "", null },
@@ -622,7 +629,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                modelMetadataProvider: null);
             var model = new MyModel { MyProperty = "Old-Value" };
 
             var values = new Dictionary<string, object>

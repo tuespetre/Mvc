@@ -231,7 +231,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
                     MetadataProvider = metataProvider,
                     ValidatorProvider = new DataAnnotationsModelValidatorProvider(
                         new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                        stringLocalizerFactory: null)
+                        stringLocalizerFactory: null,
+                        modelMetadataProvider: null)
                 }
             };
             return bindingContext;

@@ -12,6 +12,7 @@ using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.AspNet.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNet.Mvc.Routing;
+using Microsoft.AspNet.Mvc.ModelBinding;
 
 namespace Microsoft.AspNet.Mvc
 {
@@ -220,6 +221,11 @@ namespace Microsoft.AspNet.Mvc
         public override string FormatErrorMessage(string name)
         {
             return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name);
+        }
+
+        public string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        {
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
