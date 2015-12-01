@@ -166,6 +166,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MvcSandbox", "samples\MvcSa
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ResponseCacheWebSite", "test\WebSites\ResponseCacheWebSite\ResponseCacheWebSite.xproj", "{BDEEBE09-C0C4-433C-B0B8-8478C9776996}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UrlHelperSample", "samples\UrlHelperSample\UrlHelperSample.xproj", "{712A98A0-227F-40D9-9342-8FD178DACB26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1011,6 +1013,18 @@ Global
 		{BDEEBE09-C0C4-433C-B0B8-8478C9776996}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BDEEBE09-C0C4-433C-B0B8-8478C9776996}.Release|x86.ActiveCfg = Release|Any CPU
 		{BDEEBE09-C0C4-433C-B0B8-8478C9776996}.Release|x86.Build.0 = Release|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Debug|x86.Build.0 = Debug|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Release|x86.ActiveCfg = Release|Any CPU
+		{712A98A0-227F-40D9-9342-8FD178DACB26}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1092,5 +1106,6 @@ Global
 		{9879B5D5-2325-4A81-B4DF-F279FE8FEEB4} = {3BA657BF-28B1-42DA-B5B0-1C4601FCF7B1}
 		{14ED4476-9F24-4776-8417-EA6927F6C9C9} = {DAAE4C74-D06F-4874-A166-33305D2643CE}
 		{BDEEBE09-C0C4-433C-B0B8-8478C9776996} = {16703B76-C9F7-4C75-AE6C-53D92E308E3C}
+		{712A98A0-227F-40D9-9342-8FD178DACB26} = {DAAE4C74-D06F-4874-A166-33305D2643CE}
 	EndGlobalSection
 EndGlobal
