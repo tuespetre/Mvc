@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Handlers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,120 +20,62 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
         public HttpClient Client { get; }
 
-        [Fact]
-        public async Task ResponseCache_SetsAllHeaders()
-        {
-            // Arrange & Act
-            var response = await Client.GetAsync("http://localhost/CacheHeaders/Index");
+        //[Fact]
+        //public async Task SetsHeadersForAllActionsOfClass()
+        //{
+        //    // Arrange & Act
+        //    var response1 = await Client.GetAsync("http://localhost/ClassLevelCache/GetHelloWorld");
+        //    var response2 = await Client.GetAsync("http://localhost/ClassLevelCache/GetFooBar");
 
-            // Assert
-            var data = Assert.Single(response.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals("public, max-age=100", data);
-            data = Assert.Single(response.Headers.GetValues("Vary"));
-            Assert.Equal("Accept", data);
-        }
+        //    // Assert
+        //    var data = Assert.Single(response1.Headers.GetValues("Cache-control"));
+        //    AssertHeaderEquals("public, max-age=100", data);
+        //    data = Assert.Single(response1.Headers.GetValues("Vary"));
+        //    Assert.Equal("Accept", data);
 
-        public static IEnumerable<object[]> CacheControlData
-        {
-            get
-            {
-                yield return new object[] { "http://localhost/CacheHeaders/PublicCache", "public, max-age=100" };
-                yield return new object[] { "http://localhost/CacheHeaders/ClientCache", "max-age=100, private" };
-                yield return new object[] { "http://localhost/CacheHeaders/NoStore", "no-store" };
-                yield return new object[] { "http://localhost/CacheHeaders/NoCacheAtAll", "no-store, no-cache" };
-            }
-        }
+        //    data = Assert.Single(response2.Headers.GetValues("Cache-control"));
+        //    AssertHeaderEquals("public, max-age=100", data);
+        //    data = Assert.Single(response2.Headers.GetValues("Vary"));
+        //    Assert.Equal("Accept", data);
+        //}
 
-        [Theory]
-        [MemberData(nameof(CacheControlData))]
-        public async Task ResponseCache_SetsDifferentCacheControlHeaders(string url, string expected)
-        {
-            // Arrange & Act
-            var response = await Client.GetAsync(url);
+        //[Fact]
+        //public async Task HeadersSetInActionOverridesTheOnesInClass()
+        //{
+        //    // Arrange & Act
+        //    var response = await Client.GetAsync("http://localhost/ClassLevelCache/ConflictExistingHeader");
 
-            // Assert
-            var data = Assert.Single(response.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals(expected, data);
-        }
+        //    // Assert
+        //    var data = Assert.Single(response.Headers.GetValues("Cache-control"));
+        //    AssertHeaderEquals("public, max-age=20", data);
+        //}
 
-        [Fact]
-        public async Task SetsHeadersForAllActionsOfClass()
-        {
-            // Arrange & Act
-            var response1 = await Client.GetAsync("http://localhost/ClassLevelCache/GetHelloWorld");
-            var response2 = await Client.GetAsync("http://localhost/ClassLevelCache/GetFooBar");
+        //[Fact]
+        //public async Task HeadersToNotCacheAParticularAction()
+        //{
+        //    // Arrange & Act
+        //    var response = await Client.GetAsync("http://localhost/ClassLevelCache/DoNotCacheThisAction");
 
-            // Assert
-            var data = Assert.Single(response1.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals("public, max-age=100", data);
-            data = Assert.Single(response1.Headers.GetValues("Vary"));
-            Assert.Equal("Accept", data);
+        //    // Assert
+        //    var data = Assert.Single(response.Headers.GetValues("Cache-control"));
+        //    AssertHeaderEquals("no-store, no-cache", data);
+        //}
 
-            data = Assert.Single(response2.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals("public, max-age=100", data);
-            data = Assert.Single(response2.Headers.GetValues("Vary"));
-            Assert.Equal("Accept", data);
-        }
+        //[Fact]
+        //public async Task ClassLevelHeadersAreUnsetByActionLevelHeaders()
+        //{
+        //    // Arrange & Act
+        //    var response = await Client.GetAsync("http://localhost/ClassLevelNoStore/CacheThisAction");
 
-        [Fact]
-        public async Task HeadersSetInActionOverridesTheOnesInClass()
-        {
-            // Arrange & Act
-            var response = await Client.GetAsync("http://localhost/ClassLevelCache/ConflictExistingHeader");
-
-            // Assert
-            var data = Assert.Single(response.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals("public, max-age=20", data);
-        }
-
-        [Fact]
-        public async Task HeadersToNotCacheAParticularAction()
-        {
-            // Arrange & Act
-            var response = await Client.GetAsync("http://localhost/ClassLevelCache/DoNotCacheThisAction");
-
-            // Assert
-            var data = Assert.Single(response.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals("no-store, no-cache", data);
-        }
-
-        [Fact]
-        public async Task ClassLevelHeadersAreUnsetByActionLevelHeaders()
-        {
-            // Arrange & Act
-            var response = await Client.GetAsync("http://localhost/ClassLevelNoStore/CacheThisAction");
-
-            // Assert
-            var data = Assert.Single(response.Headers.GetValues("Vary"));
-            Assert.Equal("Accept", data);
-            data = Assert.Single(response.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals("public, max-age=10", data);
-            IEnumerable<string> pragmaValues;
-            response.Headers.TryGetValues("Pragma", out pragmaValues);
-            Assert.Null(pragmaValues);
-        }
-
-        [Fact]
-        public async Task SetsCacheControlPublicByDefault()
-        {
-            // Arrange & Act
-            var response = await Client.GetAsync("http://localhost/CacheHeaders/SetsCacheControlPublicByDefault");
-
-            // Assert
-            var data = Assert.Single(response.Headers.GetValues("Cache-control"));
-            AssertHeaderEquals("public, max-age=40", data);
-        }
-
-        [Fact]
-        public async Task ThrowsWhenDurationIsNotSet()
-        {
-            // Arrange & Act
-            var ex = await Assert.ThrowsAsync<InvalidOperationException>(
-                    () => Client.GetAsync("http://localhost/CacheHeaders/ThrowsWhenDurationIsNotSet"));
-            Assert.Equal(
-                "If the 'NoStore' property is not set to true, 'Duration' property must be specified.",
-                ex.Message);
-        }
+        //    // Assert
+        //    var data = Assert.Single(response.Headers.GetValues("Vary"));
+        //    Assert.Equal("Accept", data);
+        //    data = Assert.Single(response.Headers.GetValues("Cache-control"));
+        //    AssertHeaderEquals("public, max-age=10", data);
+        //    IEnumerable<string> pragmaValues;
+        //    response.Headers.TryGetValues("Pragma", out pragmaValues);
+        //    Assert.Null(pragmaValues);
+        //}
 
         // Cache Profiles
         [Fact]
