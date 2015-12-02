@@ -23,6 +23,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
         public HttpClient Client { get; }
 
+        // TODO: the binding of body doesn't make sense but how about the impossible string test?
         [Fact]
         public async Task TryValidateModel_ClearParameterValidationError_ReturnsErrorsForInvalidProperties()
         {
