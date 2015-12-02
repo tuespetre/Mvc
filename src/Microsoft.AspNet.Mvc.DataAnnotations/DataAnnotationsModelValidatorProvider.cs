@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 #if DOTNET5_4
 using System.Reflection;
@@ -26,11 +27,17 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// </summary>
         /// <param name="options">The <see cref="IOptions{MvcDataAnnotationsLocalizationOptions}"/>.</param>
         /// <param name="stringLocalizerFactory">The <see cref="IStringLocalizerFactory"/>.</param>
+        /// <remarks>options and stringLocalizerFactory are nullable only for testing ease.</remarks>
         public DataAnnotationsModelValidatorProvider(
+            IModelMetadataProvider modelMetadataProvider,
             IOptions<MvcDataAnnotationsLocalizationOptions> options,
-            IStringLocalizerFactory stringLocalizerFactory,
-            IModelMetadataProvider modelMetadataProvider)
+            IStringLocalizerFactory stringLocalizerFactory)
         {
+            if (modelMetadataProvider == null)
+            {
+                throw new ArgumentNullException(nameof(modelMetadataProvider));
+            }
+
             _options = options;
             _stringLocalizerFactory = stringLocalizerFactory;
             _modelMetadataProvider = modelMetadataProvider;
@@ -56,8 +63,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
                 var validator = new DataAnnotationsModelValidator(
                     attribute,
-                    stringLocalizer,
-                    _modelMetadataProvider);
+                    _modelMetadataProvider,
+                    stringLocalizer);
 
                 // Inserts validators based on whether or not they are 'required'. We want to run
                 // 'required' validators first so that we get the best possible error message.

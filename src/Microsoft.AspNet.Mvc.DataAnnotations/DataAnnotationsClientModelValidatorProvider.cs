@@ -12,16 +12,6 @@ using Microsoft.Extensions.OptionsModel;
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
     /// <summary>
-    /// A factory for validators based on ValidationAttribute.
-    /// </summary>
-    /// <param name="attribute"></param>
-    /// <param name="stringLocalizer"></param>
-    /// <returns></returns>
-    public delegate IAttributeAdapter ValidationAttributeAdapterFactory(
-        ValidationAttribute attribute,
-        IStringLocalizer stringLocalizer);
-
-    /// <summary>
     /// An implementation of <see cref="IClientModelValidatorProvider"/> which provides client validators
     /// for attributes which derive from <see cref="ValidationAttribute"/>. It also provides
     /// a validator for types which implement <see cref="IClientModelValidator"/>.
@@ -30,8 +20,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     /// </summary>
     public class DataAnnotationsClientModelValidatorProvider : IClientModelValidatorProvider
     {
-        private readonly Dictionary<Type, ValidationAttributeAdapterFactory> _attributeFactories =
-            BuildAttributeFactoriesDictionary();
         private readonly IOptions<MvcDataAnnotationsLocalizationOptions> _options;
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
 
@@ -71,10 +59,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             {
                 hasRequiredAttribute |= attribute is RequiredAttribute;
 
-                ValidationAttributeAdapterFactory factory;
-                if (_attributeFactories.TryGetValue(attribute.GetType(), out factory))
+                var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(attribute, stringLocalizer);
+                if (adapter != null)
                 {
-                    context.Validators.Add(factory(attribute, stringLocalizer));
+                    context.Validators.Add(adapter);
                 }
             }
 
@@ -83,11 +71,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 // Add a default '[Required]' validator for generating HTML if necessary.
                 context.Validators.Add(new RequiredAttributeAdapter(new RequiredAttribute(), stringLocalizer));
             }
-        }
-
-        private static Dictionary<Type, ValidationAttributeAdapterFactory> BuildAttributeFactoriesDictionary()
-        {
-            return ValidationAttributeAdapterTable.AttributeFactories;
         }
     }
 }

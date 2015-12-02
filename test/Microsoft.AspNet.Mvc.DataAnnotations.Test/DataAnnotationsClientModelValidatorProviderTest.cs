@@ -128,12 +128,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             ValidationAttribute attribute,
             Type expectedAdapterType)
         {
-            // Arrange
-            var adapters = ValidationAttributeAdapterTable.AttributeFactories;
-            var adapterFactory = adapters.Single(kvp => kvp.Key == attribute.GetType()).Value;
-
-            // Act
-            var adapter = adapterFactory(attribute, stringLocalizer: null);
+            // Arrange and Act
+            var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(attribute, null);
 
             // Assert
             Assert.IsType(expectedAdapterType, adapter);
@@ -156,12 +152,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             ValidationAttribute attribute,
             string expectedRuleName)
         {
-            // Arrange
-            var adapters = ValidationAttributeAdapterTable.AttributeFactories;
-            var adapterFactory = adapters.Single(kvp => kvp.Key == attribute.GetType()).Value;
-
-            // Act
-            var adapter = adapterFactory(attribute, stringLocalizer: null);
+            // Arrange & Act
+            var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(attribute, null);
 
             // Assert
             var dataTypeAdapter = Assert.IsType<DataTypeAttributeAdapter>(adapter);

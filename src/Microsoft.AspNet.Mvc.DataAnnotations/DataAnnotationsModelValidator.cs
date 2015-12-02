@@ -20,12 +20,17 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
         public DataAnnotationsModelValidator(
             ValidationAttribute attribute,
-            IStringLocalizer stringLocalizer,
-            IModelMetadataProvider modelMetadataProvider)
+            IModelMetadataProvider modelMetadataProvider,
+            IStringLocalizer stringLocalizer)
         {
             if (attribute == null)
             {
                 throw new ArgumentNullException(nameof(attribute));
+            }
+
+            if (modelMetadataProvider == null)
+            {
+                throw new ArgumentNullException(nameof(modelMetadataProvider));
             }
 
             Attribute = attribute;
@@ -54,7 +59,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 MemberName = memberName
             };
 
-            var metadataProvider = _modelMetadataProvider;
 
             var result = Attribute.GetValidationResult(validationContext.Model, context);
             if (result != ValidationResult.Success)
@@ -79,8 +83,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     string.IsNullOrEmpty(Attribute.ErrorMessageResourceName) &&
                     Attribute.ErrorMessageResourceType == null)
                 {
-
-                    errorMessage = GetErrorMessage(metadata, metadataProvider);
+                    errorMessage = GetErrorMessage(metadata, _modelMetadataProvider);
                 }
 
                 var validationResult = new ModelValidationResult(errorMemberName, errorMessage ?? result.ErrorMessage);
@@ -90,28 +93,16 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return Enumerable.Empty<ModelValidationResult>();
         }
 
-        private static IDictionary<Type, ValidationAttributeAdapterFactory> AttributeAdapters =
-            ValidationAttributeAdapterTable.AttributeFactories;
-
         private string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
         {
-            if (Attribute == null)
+            if (metadata == null)
             {
-                throw new ArgumentNullException(nameof(Attribute));
+                throw new ArgumentNullException(nameof(metadata));
             }
 
-            var attrType = Attribute.GetType();
-            ValidationAttributeAdapterFactory factory;
+            var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(Attribute, _stringLocalizer);
 
-            if (AttributeAdapters.TryGetValue(attrType, out factory))
-            {
-                var t = factory(Attribute, _stringLocalizer);
-                return t.GetErrorMessage(metadata, _modelMetadataProvider);
-            }
-            else
-            {
-                throw new NotImplementedException($"Error message localizer not defined for {attrType.Name}");
-            }
+            return adapter.GetErrorMessage(metadata, _modelMetadataProvider);
         }
     }
 }
