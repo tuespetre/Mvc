@@ -4,9 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using Microsoft.Extensions.Localization;
 using Microsoft.AspNet.Mvc.DataAnnotations;
+using Microsoft.Extensions.Localization;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {

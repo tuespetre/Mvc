@@ -230,9 +230,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Test
                     ModelBinder = innerBinder ?? CreateIntBinder(),
                     MetadataProvider = metataProvider,
                     ValidatorProvider = new DataAnnotationsModelValidatorProvider(
-                        new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                        stringLocalizerFactory: null,
-                        modelMetadataProvider: null)
+                        modelMetadataProvider: null,
+                        options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                        stringLocalizerFactory: null)
                 }
             };
             return bindingContext;

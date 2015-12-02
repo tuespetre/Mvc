@@ -223,11 +223,6 @@ namespace Microsoft.AspNet.Mvc
             return string.Format(CultureInfo.CurrentCulture, ErrorMessageString, name);
         }
 
-        public string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <inheritdoc />
         /// <remarks>
         /// Always returns <c>true</c> since this <see cref="ValidationAttribute"/> does no validation itself.

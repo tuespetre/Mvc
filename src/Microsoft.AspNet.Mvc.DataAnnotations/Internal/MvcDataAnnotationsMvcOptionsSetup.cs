@@ -26,15 +26,16 @@ namespace Microsoft.AspNet.Mvc.DataAnnotations.Internal
             var dataAnnotationLocalizationOptions =
                 serviceProvider.GetRequiredService<IOptions<MvcDataAnnotationsLocalizationOptions>>();
 
-            var modelMetadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             // This service will be registered only if AddDataAnnotationsLocalization() is added to service collection.
             var stringLocalizerFactory = serviceProvider.GetService<IStringLocalizerFactory>();
 
             options.ModelMetadataDetailsProviders.Add(new DataAnnotationsMetadataProvider());
+
+            var modelMetadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             options.ModelValidatorProviders.Add(new DataAnnotationsModelValidatorProvider(
+                modelMetadataProvider,
                 dataAnnotationLocalizationOptions,
-                stringLocalizerFactory,
-                modelMetadataProvider));
+                stringLocalizerFactory));
         }
     }
 }
