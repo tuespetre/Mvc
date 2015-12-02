@@ -1,6 +1,5 @@
 {
-    "name": "ValidationWebSite",
-    "description": "Web site demonstrating various validations.",
+    "name": "BasicWebSite",
     "private": true,
     "dependencies": {
         "jquery": "1.11.2",

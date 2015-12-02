@@ -1,7 +1,6 @@
-﻿@model ValidationWebSite.Models.Person
+﻿@model BasicWebSite.Models.User
 @{
-    Layout = "_Layout.cshtml";
-
+    Layout = "/Views/RemoteAttribute_Home/_Layout.cshtml";
     object areaObject;
     ViewContext.ActionDescriptor.RouteValueDefaults.TryGetValue("area", out areaObject);
     var areaName = (areaObject as string) ?? "root";

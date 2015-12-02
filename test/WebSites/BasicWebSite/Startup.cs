@@ -2,6 +2,8 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.AspNet.Builder;
+using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Http.Internal;
 using Microsoft.AspNet.Mvc.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +22,7 @@ namespace BasicWebSite
             services.AddSingleton<IActionDescriptorProvider, ActionDescriptorCreationCounter>();
 
             services.AddScoped<RequestIdService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddCaching();
             services.AddSession();
         }
@@ -27,6 +30,8 @@ namespace BasicWebSite
         public void Configure(IApplicationBuilder app)
         {
             app.UseCultureReplacer();
+
+            app.UseStaticFiles();
 
             // Initializes the RequestId service for each request
             app.UseMiddleware<RequestIdMiddleware>();

@@ -14,14 +14,5 @@
         "dnx451": { },
         "dnxcore50": { }
     },
-    "exclude": [
-        "wwwroot",
-        "node_modules",
-        "bower_components"
-    ],
-    "publishExclude": [
-        "**.user",
-        "**.vspscc"
-    ],
     "webroot": "wwwroot"
 }

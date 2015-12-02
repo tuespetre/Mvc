@@ -3,7 +3,7 @@
 
 using Microsoft.AspNet.Mvc;
 
-namespace ValidationWebSite.Controllers
+namespace BasicWebSite.Controllers
 {
     [Route("[Controller]/[Action]")]
     public class RemoteAttribute_VerifyController : Controller

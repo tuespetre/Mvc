@@ -11,7 +11,6 @@ namespace BasicWebSite.Areas.Area1.Controllers
         // This action is overloaded and may receive requests to validate either UserId1 or UserId3.
         // Demonstrates use of the default error message.
         [AcceptVerbs("Get", "Post")]
-        [Route("[Area]/[Controller]/[Action]", Order = -2)]
         public IActionResult IsIdAvailable(string userId1, string userId3)
         {
             return Json(data: false);

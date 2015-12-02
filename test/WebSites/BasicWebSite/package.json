@@ -1,7 +1,6 @@
-﻿{
+{
     "version": "0.0.0",
-    "name": "ValidationWebSite",
-    "description": "Web site demonstrating various validations.",
+    "name": "BasicWebSite",
     "private":  true,
     "devDependencies": {
         "grunt": "^0.4.5",

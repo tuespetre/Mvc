@@ -4,14 +4,13 @@
 using Microsoft.AspNet.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ValidationWebSite
+namespace TagHelpersWebSite
 {
     public class Startup
     {
         // Set up application services
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add MVC services to the services container
             services.AddMvc();
         }
 
@@ -19,18 +18,7 @@ namespace ValidationWebSite
         {
             app.UseCultureReplacer();
 
-            // Set up file serving for JavaScript files.
-            app.UseFileServer();
-
-            app.UseErrorReporter();
-
-            // Add MVC to the request pipeline
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                name: "default",
-                template: "{controller}/{action}/{id?}");
-            });
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
