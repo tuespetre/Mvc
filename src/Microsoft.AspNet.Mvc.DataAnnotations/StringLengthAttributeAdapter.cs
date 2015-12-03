@@ -24,18 +24,18 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var errorMessage = GetErrorMessage(context.ModelMetadata);
+            var errorMessage = GetErrorMessage(context);
             var rule = new ModelClientValidationStringLengthRule(errorMessage,
                                                                  Attribute.MinimumLength,
                                                                  Attribute.MaximumLength);
             return new[] { rule };
         }
 
-        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             return GetErrorMessage(
-                metadata,
-                metadata.GetDisplayName(),
+                validationContext.ModelMetadata,
+                validationContext.ModelMetadata.GetDisplayName(),
                 Attribute.MinimumLength,
                 Attribute.MaximumLength);
         }

@@ -72,8 +72,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             };
 
             var validator = new DataAnnotationsModelValidatorProvider(
-                modelMetadataProvider: null,
-                options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
                 stringLocalizerFactory: null);
             var model = new MyModel();
 
@@ -116,8 +115,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             };
 
             var validator = new DataAnnotationsModelValidatorProvider(
-                modelMetadataProvider: null,
-                options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
                 stringLocalizerFactory: null);
             var model = new MyModel { MyProperty = "Old-Value" };
 
@@ -191,8 +189,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             };
 
             var validator = new DataAnnotationsModelValidatorProvider(
-                modelMetadataProvider: null,
-                options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
                 stringLocalizerFactory: null);
             var model = new MyModel
             {
@@ -280,8 +277,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             };
 
             var validator = new DataAnnotationsModelValidatorProvider(
-                modelMetadataProvider: null,
-                options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
                 stringLocalizerFactory: null);
             var model = new MyModel
             {
@@ -333,8 +329,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             };
 
             var validator = new DataAnnotationsModelValidatorProvider(
-                modelMetadataProvider: null,
-                options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
                 stringLocalizerFactory: null);
             var model = new MyModel
             {
@@ -539,8 +534,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             };
 
             var validator = new DataAnnotationsModelValidatorProvider(
-                modelMetadataProvider: null,
-                options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
                 stringLocalizerFactory: null);
             var model = new MyModel
             {
@@ -630,8 +624,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
             };
 
             var validator = new DataAnnotationsModelValidatorProvider(
-                modelMetadataProvider: null,
-                options: new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
+                new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
                 stringLocalizerFactory: null);
             var model = new MyModel { MyProperty = "Old-Value" };
 

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.Extensions.Localization;
 
@@ -28,39 +29,67 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var errorMessage = GetErrorMessage(context.ModelMetadata, context.MetadataProvider);
+            var errorMessage = GetErrorMessage(context);
             var clientRule = new ModelClientValidationEqualToRule(errorMessage,
                                                             FormatPropertyForClientValidation(Attribute.OtherProperty));
             return new[] { clientRule };
         }
 
-        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        /// <inheritdoc />
+        public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
-            var displayName = metadata.GetDisplayName();
+            var displayName = validationContext.ModelMetadata.GetDisplayName();
 
-            var otherPropertyDisplayName = GetOtherPropertyDisplayName(metadata, metadataProvider);
-
-            return GetErrorMessage(metadata, displayName, otherPropertyDisplayName);
+            return new CompareAttributeWrapper(Attribute).FormatErrorMessage(validationContext);
         }
 
-        private string GetOtherPropertyDisplayName(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        private class CompareAttributeWrapper : CompareAttribute
         {
-            // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the
-            // OtherPropertyDisplayName until after IsValid() is called. Therefore, by the time we get
-            // the error message for client validation, the display name is not populated and won't be used.
-            var otherPropertyDisplayName = Attribute.OtherPropertyDisplayName;
-            if (otherPropertyDisplayName == null && metadata.ContainerType != null)
+            public CompareAttributeWrapper(CompareAttribute attribute)
+                : base(attribute.OtherProperty)
             {
-                var otherProperty = metadataProvider.GetMetadataForProperty(
-                    metadata.ContainerType,
-                    Attribute.OtherProperty);
-                if (otherProperty != null)
+                // Copy settable properties from wrapped attribute. Don't reset default message accessor (set as
+                // CompareAttribute constructor calls ValidationAttribute constructor) when all properties are null to
+                // preserve default error message. Reset the message accessor when just ErrorMessageResourceType is
+                // non-null to ensure correct InvalidOperationException.
+                if (!string.IsNullOrEmpty(attribute.ErrorMessage) ||
+                    !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) ||
+                    attribute.ErrorMessageResourceType != null)
                 {
-                    return otherProperty.GetDisplayName();
+                    ErrorMessage = attribute.ErrorMessage;
+                    ErrorMessageResourceName = attribute.ErrorMessageResourceName;
+                    ErrorMessageResourceType = attribute.ErrorMessageResourceType;
                 }
             }
 
-            return Attribute.OtherProperty;
+            public string FormatErrorMessage(ModelValidationContextBase context)
+            {
+                var displayName = context.ModelMetadata.GetDisplayName();
+                return string.Format(CultureInfo.CurrentCulture,
+                                        ErrorMessageString,
+                                        displayName,
+                                        GetOtherPropertyDisplayName(context));
+            }
+
+            private string GetOtherPropertyDisplayName(ModelValidationContextBase validationContext)
+            {
+                // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the
+                // OtherPropertyDisplayName until after IsValid() is called. Therefore, by the time we get
+                // the error message for client validation, the display name is not populated and won't be used.
+                var otherPropertyDisplayName = OtherPropertyDisplayName;
+                if (otherPropertyDisplayName == null && validationContext.ModelMetadata.ContainerType != null)
+                {
+                    var otherProperty = validationContext.MetadataProvider.GetMetadataForProperty(
+                        validationContext.ModelMetadata.ContainerType,
+                        OtherProperty);
+                    if (otherProperty != null)
+                    {
+                        return otherProperty.GetDisplayName();
+                    }
+                }
+
+                return OtherProperty;
+            }
         }
 
         private static string FormatPropertyForClientValidation(string property)

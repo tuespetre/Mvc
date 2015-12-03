@@ -1,15 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Localization;
 
 namespace Microsoft.AspNet.Mvc.DataAnnotations
 {
+    /// <summary>
+    /// Creates a <see cref="IAttributeAdapter"/> for the given attribute.
+    /// </summary>
     public class ValidationAttributeAdapterProvider
     {
+        /// <summary>
+        /// Creates a <see cref="IAttributeAdapter"/> for the given attribute.
+        /// </summary>
+        /// <param name="attribute">The attribute to create an adapter for.</param>
+        /// <param name="stringLocalizer">The localizer to provide to the adapter.</param>
+        /// <returns>An <see cref="IAttributeAdapter"/> for the given attribute.</returns>
         public static IAttributeAdapter GetAttributeAdapter(ValidationAttribute attribute, IStringLocalizer stringLocalizer)
         {
             IAttributeAdapter adapter;

@@ -24,13 +24,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var errorMessage = GetErrorMessage(context.ModelMetadata);
+            var errorMessage = GetErrorMessage(context);
             return new[] { new ModelClientValidationRequiredRule(errorMessage) };
         }
 
-        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
-            return base.GetErrorMessage(metadata, metadata.GetDisplayName());
+            return base.GetErrorMessage(validationContext.ModelMetadata, validationContext.ModelMetadata.GetDisplayName());
         }
     }
 }

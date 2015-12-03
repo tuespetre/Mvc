@@ -1,10 +1,20 @@
-﻿using Microsoft.AspNet.Mvc.ModelBinding;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 
 namespace Microsoft.AspNet.Mvc.DataAnnotations
 {
+    /// <summary>
+    /// Interface so that adapters provide their relevent values to error messages.
+    /// </summary>
     public interface IAttributeAdapter : IClientModelValidator
     {
-        string GetErrorMessage(ModelMetadata modelMetadata, IModelMetadataProvider metadataProvider);
+        /// <summary>
+        /// Implementors should provide the important values of their attribute to the base GetErrorMessage.
+        /// </summary>
+        /// <param name="validationContext">The context to use in message creation.</param>
+        /// <returns>The localized and parameterized error message.</returns>
+        string GetErrorMessage(ModelValidationContextBase validationContext);
     }
 }

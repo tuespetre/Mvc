@@ -24,13 +24,17 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var errorMessage = GetErrorMessage(context.ModelMetadata);
+            var errorMessage = GetErrorMessage(context);
             return new[] { new ModelClientValidationRangeRule(errorMessage, Attribute.Minimum, Attribute.Maximum) };
         }
 
-        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
-            return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.Minimum, Attribute.Maximum);
+            return GetErrorMessage(
+                validationContext.ModelMetadata,
+                validationContext.ModelMetadata.GetDisplayName(),
+                Attribute.Minimum,
+                Attribute.Maximum);
         }
     }
 }

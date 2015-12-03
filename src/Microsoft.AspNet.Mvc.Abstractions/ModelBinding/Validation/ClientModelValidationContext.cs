@@ -5,7 +5,7 @@ using System;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
-    public class ClientModelValidationContext
+    public class ClientModelValidationContext : ModelValidationContextBase
     {
         public ClientModelValidationContext(
             ActionContext actionContext,
@@ -31,11 +31,5 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             ModelMetadata = metadata;
             MetadataProvider = metadataProvider;
         }
-
-        public ActionContext ActionContext { get; }
-
-        public ModelMetadata ModelMetadata { get; }
-
-        public IModelMetadataProvider MetadataProvider { get; }
     }
 }

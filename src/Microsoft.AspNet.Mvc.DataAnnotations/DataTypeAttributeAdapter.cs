@@ -36,13 +36,16 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var errorMessage = GetErrorMessage(context.ModelMetadata);
+            var errorMessage = GetErrorMessage(context);
             return new[] { new ModelClientValidationRule(RuleName, errorMessage) };
         }
 
-        public override string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
-            return GetErrorMessage(metadata, metadata.GetDisplayName(), Attribute.GetDataTypeName());
+            return GetErrorMessage(
+                validationContext.ModelMetadata,
+                validationContext.ModelMetadata.GetDisplayName(),
+                Attribute.GetDataTypeName());
         }
     }
 }
