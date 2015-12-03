@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace UrlHelperSample
@@ -22,7 +22,7 @@ namespace UrlHelperSample
             // Add MVC services to the services container
             services.AddMvc();
 
-            services.AddScoped<IUrlHelper, CustomUrlHelper>();
+            services.AddSingleton<IUrlHelperFactory, CustomUrlHelperFactory>();
         }
 
         public void Configure(IApplicationBuilder app)
