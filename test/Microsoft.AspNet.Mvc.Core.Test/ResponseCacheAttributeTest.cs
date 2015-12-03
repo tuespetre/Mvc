@@ -2,16 +2,16 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNet.Http.Internal;
 using Microsoft.AspNet.Mvc.Abstractions;
 using Microsoft.AspNet.Mvc.Filters;
 using Microsoft.AspNet.Routing;
 using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using Xunit;
-using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.AspNet.Mvc
 {
