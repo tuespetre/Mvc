@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.Abstractions;
 using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Testing;
+using Microsoft.AspNet.Http.Internal;
 #if !DNXCORE50
 using Microsoft.AspNet.Testing.xunit;
 #endif
@@ -108,7 +109,6 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
                     Detail2 = "d2",
                     Detail3 = "d3"
                 }
-
             });
             var oldModel = model;
 
@@ -146,24 +146,21 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             string prefix,
             OperationBindingContext operationContext)
         {
-            var modelName = prefix ?? string.Empty;
+            var controller = new TestController();
+            controller.ObjectValidator = ModelBindingTestHelper.GetObjectValidator();
+            controller.ControllerContext = new ControllerContext(operationContext.ActionContext);
+            controller.MetadataProvider = operationContext.MetadataProvider;
+            controller.ControllerContext.ValidatorProviders = new[] { operationContext.ValidatorProvider }.ToList();
 
-            ModelBindingHelper.ClearValidationStateForModel(
-                model.GetType(),
-                operationContext.ActionContext.ModelState,
-                operationContext.MetadataProvider,
-                modelName);
+            return controller.TryValidateModel(model, prefix);
+        }
 
-            var objectValidator = ModelBindingTestHelper.GetObjectValidator();
-
-            objectValidator.Validate(
-                operationContext.ActionContext,
-                operationContext.ValidatorProvider,
-                validationState: null,
-                prefix: prefix,
-                model: model);
-
-            return operationContext.ActionContext.ModelState.IsValid;
+        private void AssertErrorEquals(string expected, string actual)
+        {
+            // OrderBy is used because the order of the results may very depending on the platform / client.
+            Assert.Equal(
+                expected.Split('.').OrderBy(item => item, StringComparer.Ordinal),
+                actual.Split('.').OrderBy(item => item, StringComparer.Ordinal));
         }
 
         private Dictionary<string, string> GetModelStateErrors(ModelStateDictionary modelState)
@@ -188,12 +185,8 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             return result;
         }
 
-        private void AssertErrorEquals(string expected, string actual)
+        private class TestController : Controller
         {
-            // OrderBy is used because the order of the results may very depending on the platform / client.
-            Assert.Equal(
-                expected.Split('.').OrderBy(item => item, StringComparer.Ordinal),
-                actual.Split('.').OrderBy(item => item, StringComparer.Ordinal));
         }
     }
 }

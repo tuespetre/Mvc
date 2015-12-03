@@ -1,7 +1,6 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -28,12 +27,12 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task ModelMetaDataTypeAttribute_ValidBaseClass_EmptyResponseBody()
+        public async Task ModelMetaDataTypeAttribute_ValidBaseClass_NoModelStateErrors()
         {
             // Arrange
             var input = "{ \"Name\": \"MVC\", \"Contact\":\"4258959019\", \"Category\":\"Technology\"," +
-                "\"CompanyName\":\"Microsoft\", \"Country\":\"USA\",\"Price\": 21, \"ProductDetails\": {\"Detail1\": \"d1\"," +
-                " \"Detail2\": \"d2\", \"Detail3\": \"d3\"}}";
+                "\"CompanyName\":\"Microsoft\", \"Country\":\"USA\",\"Price\": 21, " +
+                "\"ProductDetails\": {\"Detail1\": \"d1\", \"Detail2\": \"d2\", \"Detail3\": \"d3\"}}";
             var argumentBinder = ModelBindingTestHelper.GetArgumentBinder();
             var parameter = new ParameterDescriptor()
             {
@@ -60,12 +59,12 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             // Assert
             Assert.True(modelBindingResult.IsModelSet);
             var boundPerson = Assert.IsType<ProductViewModel>(modelBindingResult.Model);
-            Assert.NotNull(boundPerson);
             Assert.True(modelState.IsValid);
+            Assert.NotNull(boundPerson);
         }
 
         [Fact]
-        public async Task ModelMetaDataTypeAttribute_InvalidPropertiesAndSubPropertiesOnBaseClass_ReturnsErrors()
+        public async Task ModelMetaDataTypeAttribute_InvalidPropertiesAndSubPropertiesOnBaseClass_HasModelStateErrors()
         {
             // Arrange
             var input = "{ \"Price\": 2, \"ProductDetails\": {\"Detail1\": \"d1\"}}";
@@ -112,7 +111,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task ModelMetaDataTypeAttribute_InvalidComplexTypePropertyOnBaseClass_ReturnsErrors()
+        public async Task ModelMetaDataTypeAttribute_InvalidComplexTypePropertyOnBaseClass_HasModelStateErrors()
         {
             // Arrange
             var input = "{ \"Contact\":\"4255678765\", \"Category\":\"Technology\"," +
@@ -152,7 +151,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task ModelMetaDataTypeAttribute_InvalidClassAttributeOnBaseClass_ReturnsErrors()
+        public async Task ModelMetaDataTypeAttribute_InvalidClassAttributeOnBaseClass_HasModelStateErrors()
         {
             // Arrange
             var input = "{ \"Contact\":\"4258959019\", \"Category\":\"Technology\"," +
@@ -192,7 +191,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task ModelMetaDataTypeAttribute_ValidDerivedClass_EmptyResponseBody()
+        public async Task ModelMetaDataTypeAttribute_ValidDerivedClass_NoModelStateErrors()
         {
             // Arrange
             var input = "{ \"Name\": \"MVC\", \"Contact\":\"4258959019\", \"Category\":\"Technology\"," +
@@ -229,7 +228,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task ModelMetaDataTypeAttribute_InvalidPropertiesOnDerivedClass_ReturnsErrors()
+        public async Task ModelMetaDataTypeAttribute_InvalidPropertiesOnDerivedClass_HasModelStateErrors()
         {
             // Arrange
             var input = "{ \"Name\": \"MVC\", \"Contact\":\"425-895-9019\", \"Category\":\"Technology\"," +
@@ -269,7 +268,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
         }
 
         [Fact]
-        public async Task ModelMetaDataTypeAttribute_InvalidClassAttributeOnBaseClassProduct_ReturnsErrors()
+        public async Task ModelMetaDataTypeAttribute_InvalidClassAttributeOnBaseClassProduct_HasModelStateErrors()
         {
             // Arrange
             var input = "{ \"Contact\":\"4258959019\", \"Category\":\"Technology\"," +
