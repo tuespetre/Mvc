@@ -4,6 +4,8 @@
 using Microsoft.AspNet.Mvc.DataAnnotations.Internal;
 using Microsoft.AspNet.Mvc.Formatters.Json.Internal;
 using Microsoft.AspNet.Mvc.Internal;
+using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNet.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.OptionsModel;
@@ -17,6 +19,8 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             Value = new MvcOptions();
             MvcCoreMvcOptionsSetup.ConfigureMvc(Value, new TestHttpRequestStreamReaderFactory());
             var collection = new ServiceCollection().AddOptions();
+            collection.AddSingleton<ICompositeMetadataDetailsProvider, DefaultCompositeMetadataDetailsProvider>();
+            collection.AddSingleton<IModelMetadataProvider, DefaultModelMetadataProvider>();
             MvcDataAnnotationsMvcOptionsSetup.ConfigureMvc(
                 Value,
                 collection.BuildServiceProvider());

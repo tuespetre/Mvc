@@ -20,7 +20,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     {
         private readonly IOptions<MvcDataAnnotationsLocalizationOptions> _options;
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
-        private readonly IModelMetadataProvider _modelMetadataProvider;
 
         /// <summary>
         /// Create a new instance of <see cref="DataAnnotationsModelValidatorProvider"/>.
@@ -29,18 +28,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// <param name="stringLocalizerFactory">The <see cref="IStringLocalizerFactory"/>.</param>
         /// <remarks>options and stringLocalizerFactory are nullable only for testing ease.</remarks>
         public DataAnnotationsModelValidatorProvider(
-            IModelMetadataProvider modelMetadataProvider,
             IOptions<MvcDataAnnotationsLocalizationOptions> options,
             IStringLocalizerFactory stringLocalizerFactory)
         {
-            if (modelMetadataProvider == null)
-            {
-                throw new ArgumentNullException(nameof(modelMetadataProvider));
-            }
-
             _options = options;
             _stringLocalizerFactory = stringLocalizerFactory;
-            _modelMetadataProvider = modelMetadataProvider;
         }
 
         public void GetValidators(ModelValidatorProviderContext context)
@@ -63,7 +55,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
                 var validator = new DataAnnotationsModelValidator(
                     attribute,
-                    _modelMetadataProvider,
                     stringLocalizer);
 
                 // Inserts validators based on whether or not they are 'required'. We want to run

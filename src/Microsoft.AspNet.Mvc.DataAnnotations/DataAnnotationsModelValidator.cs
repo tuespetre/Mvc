@@ -16,11 +16,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     public class DataAnnotationsModelValidator : IModelValidator
     {
         private IStringLocalizer _stringLocalizer;
-        private IModelMetadataProvider _modelMetadataProvider;
 
         public DataAnnotationsModelValidator(
             ValidationAttribute attribute,
-            IModelMetadataProvider modelMetadataProvider,
             IStringLocalizer stringLocalizer)
         {
             if (attribute == null)
@@ -28,14 +26,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(attribute));
             }
 
-            if (modelMetadataProvider == null)
-            {
-                throw new ArgumentNullException(nameof(modelMetadataProvider));
-            }
-
             Attribute = attribute;
             _stringLocalizer = stringLocalizer;
-            _modelMetadataProvider = modelMetadataProvider;
         }
         /// <summary>
         /// The attribute being validated against.
@@ -49,7 +41,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// <returns>An enumerable of the validation results.</returns>
         public IEnumerable<ModelValidationResult> Validate(ModelValidationContext validationContext)
         {
-            var metadata = validationContext.Metadata;
+            var metadata = validationContext.ModelMetadata;
             var memberName = metadata.PropertyName ?? metadata.ModelType.Name;
             var container = validationContext.Container;
 
@@ -58,7 +50,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 DisplayName = metadata.GetDisplayName(),
                 MemberName = memberName
             };
-
 
             var result = Attribute.GetValidationResult(validationContext.Model, context);
             if (result != ValidationResult.Success)
@@ -83,7 +74,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     string.IsNullOrEmpty(Attribute.ErrorMessageResourceName) &&
                     Attribute.ErrorMessageResourceType == null)
                 {
-                    errorMessage = GetErrorMessage(metadata, _modelMetadataProvider);
+                    errorMessage = GetErrorMessage(validationContext);
                 }
 
                 var validationResult = new ModelValidationResult(errorMemberName, errorMessage ?? result.ErrorMessage);
@@ -93,16 +84,30 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return Enumerable.Empty<ModelValidationResult>();
         }
 
-        private string GetErrorMessage(ModelMetadata metadata, IModelMetadataProvider metadataProvider)
+        private string GetErrorMessage(ModelValidationContextBase validationContext)
         {
-            if (metadata == null)
+            if (validationContext == null)
             {
-                throw new ArgumentNullException(nameof(metadata));
+                throw new ArgumentNullException(nameof(validationContext));
+            }
+            if (validationContext.ModelMetadata == null)
+            {
+                throw new ArgumentNullException(nameof(validationContext.ModelMetadata));
+            }
+            if (validationContext.MetadataProvider == null)
+            {
+                throw new ArgumentNullException(nameof(validationContext.MetadataProvider));
             }
 
             var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(Attribute, _stringLocalizer);
-
-            return adapter.GetErrorMessage(metadata, _modelMetadataProvider);
+            if (adapter != null)
+            {
+                return adapter.GetErrorMessage(validationContext);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

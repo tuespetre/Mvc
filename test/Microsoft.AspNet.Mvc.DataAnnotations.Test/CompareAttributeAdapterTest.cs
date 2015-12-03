@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Testing;
 using Microsoft.AspNet.Testing.xunit;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
+using Moq;
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
@@ -18,6 +20,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Arrange
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
             var metadata = metadataProvider.GetMetadataForProperty(typeof(PropertyDisplayNameModel), "MyProperty");
+
+            var stringLocalizer = new Mock<IStringLocalizer>();
+            //stringLocalizer.Setup(s => s[""])
 
             var attribute = new CompareAttribute("OtherProperty");
             var adapter = new CompareAttributeAdapter(attribute, stringLocalizer: null);
@@ -67,7 +72,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         {
             // Arrange
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
-            var metadata = metadataProvider.GetMetadataForProperty( typeof(PropertyNameModel), "MyProperty");
+            var metadata = metadataProvider.GetMetadataForProperty(typeof(PropertyNameModel), "MyProperty");
 
             var attribute = new CompareAttribute("OtherProperty")
             {

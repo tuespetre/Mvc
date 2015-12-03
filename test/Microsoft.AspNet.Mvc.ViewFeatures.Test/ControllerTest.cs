@@ -1867,8 +1867,7 @@ namespace Microsoft.AspNet.Mvc.Test
                 {
                     new DataAnnotationsModelValidatorProvider(
                         options: null,
-                        stringLocalizerFactory: null,
-                        modelMetadataProvider: null),
+                        stringLocalizerFactory: null),
                 },
             };
 

@@ -23,8 +23,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Act
             var validator = new DataAnnotationsModelValidator(
                 attribute,
-                stringLocalizer: null,
-                modelMetadataProvider: _metadataProvider);
+                stringLocalizer: null);
 
             // Assert
             Assert.Same(attribute, validator.Attribute);
@@ -146,13 +145,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 .Verifiable();
             var validator = new DataAnnotationsModelValidator(
                 attribute.Object,
-                stringLocalizer: null,
-                modelMetadataProvider: null);
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Container = container,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -176,13 +175,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             var validator = new DataAnnotationsModelValidator(
                 attribute.Object,
-                stringLocalizer: null,
-                modelMetadataProvider: null);
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Container = container,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -205,13 +204,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             var validator = new DataAnnotationsModelValidator(
                 attribute.Object,
-                stringLocalizer: null,
-                modelMetadataProvider: _metadataProvider);
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Container = container,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -237,13 +236,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 .Returns(ValidationResult.Success);
             var validator = new DataAnnotationsModelValidator(
                 attribute.Object,
-                stringLocalizer: null,
-                modelMetadataProvider: _metadataProvider);
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Container = container,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -269,14 +268,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                  .Returns(new ValidationResult(errorMessage, memberNames: null));
             var validator = new DataAnnotationsModelValidator(
                 attribute.Object,
-                stringLocalizer: null,
-                modelMetadataProvider: _metadataProvider);
+                stringLocalizer: null);
 
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Container = container,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -304,12 +303,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             var validator = new DataAnnotationsModelValidator(
                 attribute.Object,
-                stringLocalizer: null,
-                modelMetadataProvider: _metadataProvider);
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -335,12 +334,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             var validator = new DataAnnotationsModelValidator(
                 attribute.Object,
-                stringLocalizer: null,
-                modelMetadataProvider: _metadataProvider);
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -367,13 +366,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             var validator = new DataAnnotationsModelValidator(
                 attribute,
-                _metadataProvider,
                 stringLocalizer.Object);
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Container = container,
                 Model = "abcde",
+                MetadataProvider = _metadataProvider
             };
 
             // Act
@@ -397,15 +396,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             var validator = new DataAnnotationsModelValidator(
                 attribute,
-                _metadataProvider,
                 stringLocalizer.Object);
 
             var metadata = _metadataProvider.GetMetadataForType(typeof(SampleModel));
 
             var validationContext = new ModelValidationContext()
             {
-                Metadata = metadata,
+                ModelMetadata = metadata,
                 Model = model,
+                MetadataProvider = _metadataProvider
             };
 
             // Act

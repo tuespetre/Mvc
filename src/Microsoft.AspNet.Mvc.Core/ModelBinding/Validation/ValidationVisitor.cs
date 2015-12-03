@@ -14,6 +14,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     public class ValidationVisitor
     {
         private readonly IModelValidatorProvider _validatorProvider;
+        private readonly IModelMetadataProvider _metadataProvider;
         private readonly ActionContext _actionContext;
         private readonly ModelStateDictionary _modelState;
         private readonly ValidationStateDictionary _validationState;
@@ -26,7 +27,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         private IValidationStrategy _strategy;
 
         private HashSet<object> _currentPath;
-        
+
         /// <summary>
         /// Creates a new <see cref="ValidationVisitor"/>.
         /// </summary>
@@ -36,6 +37,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         public ValidationVisitor(
             ActionContext actionContext,
             IModelValidatorProvider validatorProvider,
+            IModelMetadataProvider metadataProvider,
             ValidationStateDictionary validationState)
         {
             if (actionContext == null)
@@ -50,6 +52,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             _actionContext = actionContext;
             _validatorProvider = validatorProvider;
+            _metadataProvider = metadataProvider;
             _validationState = validationState;
 
             _modelState = actionContext.ModelState;
@@ -97,7 +100,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                         ActionContext = _actionContext,
                         Container = _container,
                         Model = _model,
-                        Metadata = _metadata,
+                        ModelMetadata = _metadata,
+                        MetadataProvider = _metadataProvider
                     };
 
                     var results = new List<ModelValidationResult>();
