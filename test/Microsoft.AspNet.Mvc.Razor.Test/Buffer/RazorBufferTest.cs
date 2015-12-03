@@ -5,19 +5,20 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNet.Html;
 using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNet.Mvc.ViewFeatures.Buffer;
 using Microsoft.Extensions.WebEncoders.Testing;
 using Moq;
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.Razor.Buffer
 {
-    public class RazorBufferTest
+    public class ViewBufferTest
     {
         [Fact]
         public void Append_AddsStringRazorValue()
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(), "some-name");
 
             // Act
             buffer.Append("Hello world");
@@ -32,7 +33,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
         public void Append_AddsHtmlContentRazorValue()
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(), "some-name");
             var content = new HtmlString("hello-world");
 
             // Act
@@ -48,7 +49,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
         public void AppendHtml_AddsHtmlStringValues()
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(), "some-name");
             var value = "Hello world";
 
             // Act
@@ -65,8 +66,8 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
         public void Append_CreatesNewSegments_WhenCurrentSegmentIsFull()
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(), "some-name");
-            var expected = Enumerable.Range(0, TestRazorBufferScope.BufferSize).Select(i => i.ToString());
+            var buffer = new ViewBuffer(new TestViewBufferScope(), "some-name");
+            var expected = Enumerable.Range(0, TestViewBufferScope.BufferSize).Select(i => i.ToString());
 
             // Act
             foreach (var item in expected)
@@ -92,7 +93,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
         public void Append_CreatesNewSegments_WhenCurrentSegmentIsFull_ForBuffersWithNonZeroOffsets()
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(3, 2), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(3, 2), "some-name");
 
             // Act
             buffer.Append("1");
@@ -119,11 +120,11 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
 
         [Theory]
         [InlineData(1)]
-        [InlineData(TestRazorBufferScope.BufferSize + 3)]
+        [InlineData(TestViewBufferScope.BufferSize + 3)]
         public void Clear_ResetsBackingBufferAndIndex(int valuesToWrite)
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(), "some-name");
 
             // Act
             for (var i = 0; i < valuesToWrite; i++)
@@ -143,7 +144,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
         public void WriteTo_WritesSelf_WhenWriterIsHtmlTextWriter()
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(), "some-name");
             var htmlWriter = new Mock<HtmlTextWriter>();
             htmlWriter.Setup(w => w.Write(buffer)).Verifiable();
 
@@ -159,7 +160,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
         public void WriteTo_WritesRazorValues_ToTextWriter()
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(), "some-name");
             var writer = new StringWriter();
 
             // Act
@@ -180,7 +181,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
         public void WriteTo_WritesRazorValuesFromAllBuffers(int valuesToWrite)
         {
             // Arrange
-            var buffer = new RazorBuffer(new TestRazorBufferScope(1, 5), "some-name");
+            var buffer = new ViewBuffer(new TestViewBufferScope(1, 5), "some-name");
             var writer = new StringWriter();
             var expected = string.Join("", Enumerable.Range(0, valuesToWrite).Select(_ => "abc"));
 

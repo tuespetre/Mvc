@@ -3,30 +3,30 @@
 
 using System;
 
-namespace Microsoft.AspNet.Mvc.Razor.Buffer
+namespace Microsoft.AspNet.Mvc.ViewFeatures.Buffer
 {
-    public class TestRazorBufferScope : IRazorBufferScope
+    public class TestViewBufferScope : IViewBufferScope
     {
         public const int BufferSize = 128;
         private readonly int _offset;
         private readonly int _count;
 
-        public TestRazorBufferScope()
+        public TestViewBufferScope()
             : this(0, BufferSize)
         {
 
         }
 
-        public TestRazorBufferScope(int offset, int count)
+        public TestViewBufferScope(int offset, int count)
         {
             _offset = offset;
             _count = count;
         }
 
-        public RazorBufferSegment GetSegment()
+        public ViewBufferSegment GetSegment()
         {
-            var razorValues = new RazorValue[BufferSize];
-            return new RazorBufferSegment(new ArraySegment<RazorValue>(razorValues, _offset, _count));
+            var values = new ViewBufferValue[BufferSize];
+            return new ViewBufferSegment(new ArraySegment<ViewBufferValue>(values, _offset, _count));
         }
     }
 }

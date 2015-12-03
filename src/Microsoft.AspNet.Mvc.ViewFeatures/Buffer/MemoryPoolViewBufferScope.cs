@@ -5,42 +5,42 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.MemoryPool;
 
-namespace Microsoft.AspNet.Mvc.Razor.Buffer
+namespace Microsoft.AspNet.Mvc.ViewFeatures.Buffer
 {
     /// <summary>
-    /// A <see cref="IRazorBufferScope"/> that uses pooled memory.
+    /// A <see cref="IViewBufferScope"/> that uses pooled memory.
     /// </summary>
-    public class MemoryPoolRazorBufferScope : IRazorBufferScope, IDisposable
+    public class MemoryPoolViewBufferScope : IViewBufferScope, IDisposable
     {
         private const int SegmentSize = 1024;
-        private readonly IArraySegmentPool<RazorValue> _pool;
-        private List<LeasedArraySegment<RazorValue>> _leased;
+        private readonly IArraySegmentPool<ViewBufferValue> _pool;
+        private List<LeasedArraySegment<ViewBufferValue>> _leased;
         private bool _disposed;
 
         /// <summary>
-        /// Initializes a new instance of <see cref="MemoryPoolRazorBufferScope"/>.
+        /// Initializes a new instance of <see cref="MemoryPoolViewBufferScope"/>.
         /// </summary>
         /// <param name="pool">The <see cref="IArraySegmentPool{RazorValue}"/> for creating
-        /// <see cref="RazorValue"/> instances.</param>
-        public MemoryPoolRazorBufferScope(IArraySegmentPool<RazorValue> pool)
+        /// <see cref="ViewBufferValue"/> instances.</param>
+        public MemoryPoolViewBufferScope(IArraySegmentPool<ViewBufferValue> pool)
         {
             _pool = pool;
         }
 
         /// <inheritdoc />
-        public RazorBufferSegment GetSegment()
+        public ViewBufferSegment GetSegment()
         {
             if (_disposed)
             {
-                throw new ObjectDisposedException(typeof(MemoryPoolRazorBufferScope).FullName);
+                throw new ObjectDisposedException(typeof(MemoryPoolViewBufferScope).FullName);
             }
 
             if (_leased == null)
             {
-                _leased = new List<LeasedArraySegment<RazorValue>>(1);
+                _leased = new List<LeasedArraySegment<ViewBufferValue>>(1);
             }
 
-            LeasedArraySegment<RazorValue> segment = null;
+            LeasedArraySegment<ViewBufferValue> segment = null;
 
             try
             {
@@ -53,7 +53,7 @@ namespace Microsoft.AspNet.Mvc.Razor.Buffer
                 throw;
             }
 
-            return new RazorBufferSegment(segment.Data);
+            return new ViewBufferSegment(segment.Data);
         }
 
         /// <inheritdoc />

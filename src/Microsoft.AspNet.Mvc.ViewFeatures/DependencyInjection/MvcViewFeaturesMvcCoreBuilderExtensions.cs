@@ -9,8 +9,10 @@ using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Mvc.ViewComponents;
 using Microsoft.AspNet.Mvc.ViewEngines;
 using Microsoft.AspNet.Mvc.ViewFeatures;
+using Microsoft.AspNet.Mvc.ViewFeatures.Buffer;
 using Microsoft.AspNet.Mvc.ViewFeatures.Internal;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.MemoryPool;
 using Microsoft.Extensions.OptionsModel;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -136,6 +138,11 @@ namespace Microsoft.Extensions.DependencyInjection
             // These are stateless so their lifetime isn't really important.
             services.TryAddSingleton<ITempDataDictionaryFactory, TempDataDictionaryFactory>();
             services.TryAddSingleton<SaveTempDataFilter>();
+
+            services.TryAddSingleton<IArraySegmentPool<ViewBufferValue>, DefaultArraySegmentPool<ViewBufferValue>>();
+            // This manages buffer references for the lifetime of a single request. This must be scoped to prevent
+            // memory leaks.
+            services.TryAddScoped<IViewBufferScope, MemoryPoolViewBufferScope>();
         }
     }
 }
