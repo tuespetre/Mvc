@@ -104,13 +104,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 var count = validators.Count;
                 if (count > 0)
                 {
-                    var context = new ModelValidationContext()
+                    var context = new ModelValidationContext(
+                        _actionContext,
+                        _metadata,
+                        _metadataProvider)
                     {
-                        ActionContext = _actionContext,
                         Container = _container,
-                        Model = _model,
-                        ModelMetadata = _metadata,
-                        MetadataProvider = _metadataProvider
+                        Model = _model
                     };
 
                     var results = new List<ModelValidationResult>();

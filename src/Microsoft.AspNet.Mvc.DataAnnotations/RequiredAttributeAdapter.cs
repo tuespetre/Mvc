@@ -28,6 +28,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { new ModelClientValidationRequiredRule(errorMessage) };
         }
 
+        /// <inheritdoc />
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             return base.GetErrorMessage(validationContext.ModelMetadata, validationContext.ModelMetadata.GetDisplayName());

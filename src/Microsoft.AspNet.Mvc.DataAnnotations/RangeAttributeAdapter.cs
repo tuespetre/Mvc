@@ -28,6 +28,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { new ModelClientValidationRangeRule(errorMessage, Attribute.Minimum, Attribute.Maximum) };
         }
 
+        /// <inheritdoc />
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             return GetErrorMessage(

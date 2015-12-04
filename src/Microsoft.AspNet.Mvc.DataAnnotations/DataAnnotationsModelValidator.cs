@@ -16,10 +16,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     public class DataAnnotationsModelValidator : IModelValidator
     {
         private IStringLocalizer _stringLocalizer;
+        private IValidationAttributeAdapterProvider _validationAttributeAdapterProvider;
 
         public DataAnnotationsModelValidator(
             ValidationAttribute attribute,
-            IStringLocalizer stringLocalizer)
+            IStringLocalizer stringLocalizer,
+            IValidationAttributeAdapterProvider validationAttributeAdapterProvider)
         {
             if (attribute == null)
             {
@@ -28,14 +30,16 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             Attribute = attribute;
             _stringLocalizer = stringLocalizer;
+            _validationAttributeAdapterProvider = validationAttributeAdapterProvider;
         }
+
         /// <summary>
         /// The attribute being validated against.
         /// </summary>
         public ValidationAttribute Attribute { get; }
 
         /// <summary>
-        /// Validates the context against the Attribute.
+        /// Validates the context against the <see cref="ValidationAttribute"/>.
         /// </summary>
         /// <param name="validationContext">The context being validated.</param>
         /// <returns>An enumerable of the validation results.</returns>
@@ -92,22 +96,19 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             }
             if (validationContext.ModelMetadata == null)
             {
-                throw new ArgumentNullException(nameof(validationContext.ModelMetadata));
+                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
+                     "ModelMetadata",
+                    nameof(validationContext)));
             }
             if (validationContext.MetadataProvider == null)
             {
-                throw new ArgumentNullException(nameof(validationContext.MetadataProvider));
+                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
+                    "ModelMetadata",
+                    nameof(validationContext)));
             }
 
-            var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(Attribute, _stringLocalizer);
-            if (adapter != null)
-            {
-                return adapter.GetErrorMessage(validationContext);
-            }
-            else
-            {
-                return null;
-            }
+            var adapter = _validationAttributeAdapterProvider.GetAttributeAdapter(Attribute, _stringLocalizer);
+            return adapter?.GetErrorMessage(validationContext);
         }
     }
 }

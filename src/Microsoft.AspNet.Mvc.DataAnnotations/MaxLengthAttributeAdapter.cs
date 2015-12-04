@@ -28,6 +28,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { new ModelClientValidationMaxLengthRule(message, Attribute.Length) };
         }
 
+        /// <inheritdoc />
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             return GetErrorMessage(

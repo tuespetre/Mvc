@@ -8,6 +8,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     /// </summary>
     public class ModelValidationContext : ModelValidationContextBase
     {
+        public ModelValidationContext(
+            ActionContext actionContext,
+            ModelMetadata modelMetadata,
+            IModelMetadataProvider metadataProvider)
+            : base(actionContext, modelMetadata, metadataProvider)
+        {
+        }
+
         /// <summary>
         /// Gets or sets the model object.
         /// </summary>

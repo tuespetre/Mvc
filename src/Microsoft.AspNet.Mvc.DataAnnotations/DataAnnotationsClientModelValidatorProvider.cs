@@ -22,6 +22,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     {
         private readonly IOptions<MvcDataAnnotationsLocalizationOptions> _options;
         private readonly IStringLocalizerFactory _stringLocalizerFactory;
+        private readonly IValidationAttributeAdapterProvider _validationAttributeAdapterProvider;
 
         /// <summary>
         /// Create a new instance of <see cref="DataAnnotationsClientModelValidatorProvider"/>.
@@ -30,10 +31,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// <param name="stringLocalizerFactory">The <see cref="IStringLocalizerFactory"/>.</param>
         public DataAnnotationsClientModelValidatorProvider(
             IOptions<MvcDataAnnotationsLocalizationOptions> options,
-            IStringLocalizerFactory stringLocalizerFactory)
+            IStringLocalizerFactory stringLocalizerFactory,
+            IValidationAttributeAdapterProvider validationAttributeAdapterProvider)
         {
             _options = options;
             _stringLocalizerFactory = stringLocalizerFactory;
+            _validationAttributeAdapterProvider = validationAttributeAdapterProvider;
         }
 
         /// <inheritdoc />
@@ -59,7 +62,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             {
                 hasRequiredAttribute |= attribute is RequiredAttribute;
 
-                var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(attribute, stringLocalizer);
+                var adapter = _validationAttributeAdapterProvider.GetAttributeAdapter(attribute, stringLocalizer);
                 if (adapter != null)
                 {
                     context.Validators.Add(adapter);

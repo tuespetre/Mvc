@@ -4,7 +4,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Testing;
 using Microsoft.AspNet.Testing.xunit;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Moq;
 using Xunit;
@@ -21,11 +20,18 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
             var metadata = metadataProvider.GetMetadataForProperty(typeof(PropertyDisplayNameModel), "MyProperty");
 
-            var stringLocalizer = new Mock<IStringLocalizer>();
-            //stringLocalizer.Setup(s => s[""])
-
             var attribute = new CompareAttribute("OtherProperty");
-            var adapter = new CompareAttributeAdapter(attribute, stringLocalizer: null);
+            attribute.ErrorMessage = "CompareAttributeErrorMessage";
+
+            var stringLocalizer = new Mock<IStringLocalizer>();
+            var expectedProperties = new object[] { "MyPropertyDisplayName", "OtherPropertyDisplayName" };
+
+            var expectedMessage = "'MyPropertyDisplayName' and 'OtherPropertyDisplayName' do not match.";
+
+            stringLocalizer.Setup(s => s[attribute.ErrorMessage, expectedProperties])
+                .Returns(new LocalizedString(attribute.ErrorMessage, expectedMessage));
+
+            var adapter = new CompareAttributeAdapter(attribute, stringLocalizer: stringLocalizer.Object);
 
             var actionContext = new ActionContext();
             var context = new ClientModelValidationContext(actionContext, metadata, metadataProvider);
@@ -36,10 +42,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Assert
             var rule = Assert.Single(rules);
             // Mono issue - https://github.com/aspnet/External/issues/19
-            Assert.Equal(
-                PlatformNormalizer.NormalizeContent(
-                    "'MyPropertyDisplayName' and 'OtherPropertyDisplayName' do not match."),
-                rule.ErrorMessage);
+            Assert.Equal(PlatformNormalizer.NormalizeContent(expectedMessage), rule.ErrorMessage);
         }
 
         [Fact]
