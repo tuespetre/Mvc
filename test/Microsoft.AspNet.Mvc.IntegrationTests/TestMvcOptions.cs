@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.AspNet.Mvc.DataAnnotations.Internal;
 using Microsoft.AspNet.Mvc.Formatters.Json.Internal;
 using Microsoft.AspNet.Mvc.Internal;
@@ -21,6 +22,7 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             var collection = new ServiceCollection().AddOptions();
             collection.AddSingleton<ICompositeMetadataDetailsProvider, DefaultCompositeMetadataDetailsProvider>();
             collection.AddSingleton<IModelMetadataProvider, DefaultModelMetadataProvider>();
+            collection.AddSingleton<IValidationAttributeAdapterProvider, ValidationAttributeAdapterProvider>();
             MvcDataAnnotationsMvcOptionsSetup.ConfigureMvc(
                 Value,
                 collection.BuildServiceProvider());

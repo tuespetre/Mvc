@@ -21,9 +21,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return new[] { new ModelClientValidationNumericRule(
-                GetErrorMessage(context.ModelMetadata))
-            };
+            return new[] { new ModelClientValidationNumericRule(GetErrorMessage(context.ModelMetadata)) };
         }
 
         private string GetErrorMessage(ModelMetadata modelMetadata)

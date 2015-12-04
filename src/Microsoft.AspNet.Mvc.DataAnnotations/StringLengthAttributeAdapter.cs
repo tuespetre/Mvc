@@ -31,6 +31,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             return new[] { rule };
         }
 
+        /// <inheritdoc />
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             return GetErrorMessage(

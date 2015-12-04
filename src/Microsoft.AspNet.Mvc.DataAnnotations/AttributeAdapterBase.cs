@@ -2,14 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNet.Mvc.ModelBinding.Validation;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.Extensions.Localization;
 
-namespace Microsoft.AspNet.Mvc.DataAnnotations
+namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
     /// <summary>
-    /// An extension of <see cref="ValidationAttributeAdapter{TAttribute}"/> which forces adapters to implement
-    /// GetErrorMessage while providing their relevent values.
+    /// An abstract subclass of <see cref="ValidationAttributeAdapter{TAttribute}"/> which implements 
+    /// <see cref="IAttributeAdapter"/>.
     /// </summary>
     /// <typeparam name="TAttribute">The type of <see cref="ValidationAttribute"/> which is being wrapped.</typeparam>
     public abstract class AttributeAdapterBase<TAttribute> :
@@ -22,11 +22,7 @@ namespace Microsoft.AspNet.Mvc.DataAnnotations
         {
         }
 
-        /// <summary>
-        /// Overload which should provide this attributes important values to the base GetErrorMessage.
-        /// </summary>
-        /// <param name="validationContext">The context for which to create an error message.</param>
-        /// <returns>The localized error message.</returns>
+        /// <inheritdoc/>
         public abstract string GetErrorMessage(ModelValidationContextBase validationContext);
     }
 }

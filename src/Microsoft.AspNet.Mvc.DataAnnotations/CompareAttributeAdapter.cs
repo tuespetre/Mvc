@@ -39,57 +39,28 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
             var displayName = validationContext.ModelMetadata.GetDisplayName();
-
-            return new CompareAttributeWrapper(Attribute).FormatErrorMessage(validationContext);
+            var otherPropertyDisplayName = GetOtherPropertyDisplayName(validationContext);
+            return GetErrorMessage(validationContext.ModelMetadata, displayName, otherPropertyDisplayName);
         }
 
-        private class CompareAttributeWrapper : CompareAttribute
+        private string GetOtherPropertyDisplayName(ModelValidationContextBase validationContext)
         {
-            public CompareAttributeWrapper(CompareAttribute attribute)
-                : base(attribute.OtherProperty)
+            // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the
+            // OtherPropertyDisplayName until after IsValid() is called. Therefore, by the time we get
+            // the error message for client validation, the display name is not populated and won't be used.
+            var otherPropertyDisplayName = Attribute.OtherPropertyDisplayName;
+            if (otherPropertyDisplayName == null && validationContext.ModelMetadata.ContainerType != null)
             {
-                // Copy settable properties from wrapped attribute. Don't reset default message accessor (set as
-                // CompareAttribute constructor calls ValidationAttribute constructor) when all properties are null to
-                // preserve default error message. Reset the message accessor when just ErrorMessageResourceType is
-                // non-null to ensure correct InvalidOperationException.
-                if (!string.IsNullOrEmpty(attribute.ErrorMessage) ||
-                    !string.IsNullOrEmpty(attribute.ErrorMessageResourceName) ||
-                    attribute.ErrorMessageResourceType != null)
+                var otherProperty = validationContext.MetadataProvider.GetMetadataForProperty(
+                    validationContext.ModelMetadata.ContainerType,
+                    Attribute.OtherProperty);
+                if (otherProperty != null)
                 {
-                    ErrorMessage = attribute.ErrorMessage;
-                    ErrorMessageResourceName = attribute.ErrorMessageResourceName;
-                    ErrorMessageResourceType = attribute.ErrorMessageResourceType;
+                    return otherProperty.GetDisplayName();
                 }
             }
 
-            public string FormatErrorMessage(ModelValidationContextBase context)
-            {
-                var displayName = context.ModelMetadata.GetDisplayName();
-                return string.Format(CultureInfo.CurrentCulture,
-                                        ErrorMessageString,
-                                        displayName,
-                                        GetOtherPropertyDisplayName(context));
-            }
-
-            private string GetOtherPropertyDisplayName(ModelValidationContextBase validationContext)
-            {
-                // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the
-                // OtherPropertyDisplayName until after IsValid() is called. Therefore, by the time we get
-                // the error message for client validation, the display name is not populated and won't be used.
-                var otherPropertyDisplayName = OtherPropertyDisplayName;
-                if (otherPropertyDisplayName == null && validationContext.ModelMetadata.ContainerType != null)
-                {
-                    var otherProperty = validationContext.MetadataProvider.GetMetadataForProperty(
-                        validationContext.ModelMetadata.ContainerType,
-                        OtherProperty);
-                    if (otherProperty != null)
-                    {
-                        return otherProperty.GetDisplayName();
-                    }
-                }
-
-                return OtherProperty;
-            }
+            return Attribute.OtherProperty;
         }
 
         private static string FormatPropertyForClientValidation(string property)

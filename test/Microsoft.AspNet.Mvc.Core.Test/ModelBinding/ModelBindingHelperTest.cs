@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http.Internal;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.AspNet.Mvc.Formatters;
 using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.AspNet.Routing;
@@ -73,7 +74,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var model = new MyModel();
 
             var values = new Dictionary<string, object>
@@ -116,7 +118,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var model = new MyModel { MyProperty = "Old-Value" };
 
             var values = new Dictionary<string, object>
@@ -190,7 +193,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var model = new MyModel
             {
                 MyProperty = "Old-Value",
@@ -278,7 +282,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var model = new MyModel
             {
                 MyProperty = "Old-Value",
@@ -330,7 +335,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var model = new MyModel
             {
                 MyProperty = "Old-Value",
@@ -535,7 +541,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var model = new MyModel
             {
                 MyProperty = "Old-Value",
@@ -623,7 +630,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding
 
             var validator = new DataAnnotationsModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var model = new MyModel { MyProperty = "Old-Value" };
 
             var values = new Dictionary<string, object>

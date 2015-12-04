@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Antiforgery;
 using Microsoft.AspNet.Http.Internal;
 using Microsoft.AspNet.Mvc.Abstractions;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.AspNet.Mvc.Routing;
@@ -227,7 +228,8 @@ namespace Microsoft.AspNet.Mvc.Rendering
 
             options.ClientModelValidatorProviders.Add(new DataAnnotationsClientModelValidatorProvider(
                 localizationOptionsAccesor.Object,
-                stringLocalizerFactory: null));
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider()));
             var optionsAccessor = new Mock<IOptions<MvcViewOptions>>();
             optionsAccessor
                 .SetupGet(o => o.Value)

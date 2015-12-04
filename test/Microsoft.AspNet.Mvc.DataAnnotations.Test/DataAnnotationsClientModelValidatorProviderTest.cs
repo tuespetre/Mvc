@@ -20,7 +20,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Arrange
             var provider = new DataAnnotationsClientModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
 
             var metadata = _metadataProvider.GetMetadataForProperty(
                 typeof(DummyRequiredAttributeHelperClass),
@@ -42,7 +43,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Arrange
             var provider = new DataAnnotationsClientModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
 
             var metadata = _metadataProvider.GetMetadataForProperty(
                 typeof(DummyRequiredAttributeHelperClass),
@@ -63,7 +65,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Arrange
             var provider = new DataAnnotationsClientModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
 
             var metadata = _metadataProvider.GetMetadataForProperty(
                 typeof(DummyRequiredAttributeHelperClass),
@@ -80,93 +83,14 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             Assert.Equal("Custom Required Message", adapter.Attribute.ErrorMessage);
         }
 
-        public static IEnumerable<object[]> DataAnnotationAdapters
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    new RegularExpressionAttribute("abc"),
-                    typeof(RegularExpressionAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new MaxLengthAttribute(),
-                    typeof(MaxLengthAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                   new MinLengthAttribute(1),
-                  typeof(MinLengthAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new RangeAttribute(1, 100),
-                    typeof(RangeAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new StringLengthAttribute(6),
-                    typeof(StringLengthAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new RequiredAttribute(),
-                    typeof(RequiredAttributeAdapter)
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(DataAnnotationAdapters))]
-        public void AdapterFactory_RegistersAdapters_ForDataAnnotationAttributes(
-            ValidationAttribute attribute,
-            Type expectedAdapterType)
-        {
-            // Arrange and Act
-            var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(attribute, null);
-
-            // Assert
-            Assert.IsType(expectedAdapterType, adapter);
-        }
-
-        public static IEnumerable<object[]> DataTypeAdapters
-        {
-            get
-            {
-                yield return new object[] { new UrlAttribute(), "url" };
-                yield return new object[] { new CreditCardAttribute(), "creditcard" };
-                yield return new object[] { new EmailAddressAttribute(), "email" };
-                yield return new object[] { new PhoneAttribute(), "phone" };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(DataTypeAdapters))]
-        public void AdapterFactory_RegistersAdapters_ForDataTypeAttributes(
-            ValidationAttribute attribute,
-            string expectedRuleName)
-        {
-            // Arrange & Act
-            var adapter = ValidationAttributeAdapterProvider.GetAttributeAdapter(attribute, null);
-
-            // Assert
-            var dataTypeAdapter = Assert.IsType<DataTypeAttributeAdapter>(adapter);
-            Assert.Equal(expectedRuleName, dataTypeAdapter.RuleName);
-        }
-
         [Fact]
         public void UnknownValidationAttribute_IsNotAddedAsValidator()
         {
             // Arrange
             var provider = new DataAnnotationsClientModelValidatorProvider(
                 new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                stringLocalizerFactory: null);
+                stringLocalizerFactory: null,
+                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
             var metadata = _metadataProvider.GetMetadataForType(typeof(DummyClassWithDummyValidationAttribute));
 
             var providerContext = new ClientValidatorProviderContext(metadata);

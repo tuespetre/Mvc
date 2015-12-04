@@ -1865,9 +1865,7 @@ namespace Microsoft.AspNet.Mvc.Test
                 ValueProviders = new[] { valueProvider, },
                 ValidatorProviders = new[]
                 {
-                    new DataAnnotationsModelValidatorProvider(
-                        options: null,
-                        stringLocalizerFactory: null),
+                    new DataAnnotationsModelValidatorProvider(options: null, stringLocalizerFactory: null, validationAttributeAdapterProvider: null),
                 },
             };
 

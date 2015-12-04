@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
@@ -15,7 +16,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 new DefaultClientModelValidatorProvider(),
                 new DataAnnotationsClientModelValidatorProvider(
                     new TestOptionsManager<MvcDataAnnotationsLocalizationOptions>(),
-                    stringLocalizerFactory: null),
+                    stringLocalizerFactory: null,
+                    validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider()),
             };
 
             return new TestClientModelValidatorProvider(providers);
