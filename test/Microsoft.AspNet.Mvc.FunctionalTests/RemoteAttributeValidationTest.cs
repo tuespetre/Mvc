@@ -10,12 +10,12 @@ using Xunit;
 
 namespace Microsoft.AspNet.Mvc.FunctionalTests
 {
-    public class RemoteAttributeValidationTest : IClassFixture<MvcTestFixture<ValidationWebSite.Startup>>
+    public class RemoteAttributeValidationTest : IClassFixture<MvcTestFixture<BasicWebSite.Startup>>
     {
         private static readonly Assembly _resourcesAssembly =
             typeof(RemoteAttributeValidationTest).GetTypeInfo().Assembly;
 
-        public RemoteAttributeValidationTest(MvcTestFixture<ValidationWebSite.Startup> fixture)
+        public RemoteAttributeValidationTest(MvcTestFixture<BasicWebSite.Startup> fixture)
         {
             Client = fixture.Client;
         }
@@ -28,7 +28,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
         public async Task RemoteAttribute_LeadsToExpectedValidationAttributes(string areaName, string pathSegment)
         {
             // Arrange
-            var outputFile = "compiler/resources/ValidationWebSite." + areaName + ".RemoteAttribute_Home.Create.html";
+            var outputFile = "compiler/resources/BasicWebSite." + areaName + ".RemoteAttribute_Home.Create.html";
             var expectedContent =
                 await ResourceFile.ReadResourceAsync(_resourcesAssembly, outputFile, sourceFile: false);
             var url = "http://localhost" + pathSegment + "/RemoteAttribute_Home/Create";
