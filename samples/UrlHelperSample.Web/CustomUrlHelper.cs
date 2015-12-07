@@ -6,7 +6,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Routing;
 
-namespace UrlHelperSample
+namespace UrlHelperSample.Web
 {
     /// <summary>
     /// Following are some of the scenarios exercised here:
@@ -27,8 +27,8 @@ namespace UrlHelperSample
         /// Depending on config data, generates an absolute url pointing to a CDN server
         /// or falls back to the default behavior
         /// </summary>
-        /// <param name="contentPath"></param>
-        /// <returns></returns>
+        /// <param name="contentPath">The virtual path of the content.</param>
+        /// <returns>The absolute url.</returns>
         public override string Content(string contentPath)
         {
             if (_options.ServeCDNContent
