@@ -5,7 +5,7 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Routing;
 using Microsoft.Extensions.OptionsModel;
 
-namespace UrlHelperSample
+namespace UrlHelperSample.Web
 {
     public class CustomUrlHelperFactory : IUrlHelperFactory
     {

@@ -197,7 +197,7 @@ namespace Microsoft.AspNet.Mvc
                 VaryByHeader = "Accept"
             };
             var filter = (ResponseCacheFilter)responseCache.CreateInstance(GetServiceProvider(cacheProfiles: null));
-            var context = GetActionExecutingContext(new List<IFilterMetadata> { filter });
+            var context = GetActionExecutingContext(filter);
 
             // Act
             filter.OnActionExecuting(context);
@@ -213,34 +213,33 @@ namespace Microsoft.AspNet.Mvc
             Assert.Equal("Accept", data);
         }
 
-        public static IEnumerable<object[]> CacheControlData
+        public static TheoryData<ResponseCacheAttribute, string> CacheControlData
         {
             get
             {
-                yield return new object[]
+                return new TheoryData<ResponseCacheAttribute, string>
                 {
-                    new ResponseCacheAttribute() { Duration = 100, Location = ResponseCacheLocation.Any },
-                    "public, max-age=100"
-                };
-                yield return new object[]
-                {
-                    new ResponseCacheAttribute() { Duration = 100, Location = ResponseCacheLocation.Client },
-                    "max-age=100, private"
-                };
-                yield return new object[]
-                {
-                    new ResponseCacheAttribute() { NoStore = true, Duration = 0 },
-                    "no-store"
-                };
-                yield return new object[]
-                {
-                    new ResponseCacheAttribute()
+                    {
+                        new ResponseCacheAttribute() { Duration = 100, Location = ResponseCacheLocation.Any },
+                        "public, max-age=100"
+                    },
+                    {
+                         new ResponseCacheAttribute() { Duration = 100, Location = ResponseCacheLocation.Client },
+                        "max-age=100, private"
+                    },
+                    {
+                        new ResponseCacheAttribute() { NoStore = true, Duration = 0 },
+                        "no-store"
+                    },
+                    {
+                        new ResponseCacheAttribute()
                     {
                         NoStore = true,
                         Duration = 0,
                         Location = ResponseCacheLocation.None
                     },
                     "no-store, no-cache"
+                    }
                 };
             }
         }
@@ -254,7 +253,7 @@ namespace Microsoft.AspNet.Mvc
             // Arrange
             var filter = (ResponseCacheFilter)responseCacheAttribute.CreateInstance(
                 GetServiceProvider(cacheProfiles: null));
-            var context = GetActionExecutingContext(new List<IFilterMetadata> { filter });
+            var context = GetActionExecutingContext(filter);
 
             // Act
             filter.OnActionExecuting(context);
@@ -273,7 +272,7 @@ namespace Microsoft.AspNet.Mvc
             var responseCacheAttribute = new ResponseCacheAttribute() { Duration = 40 };
             var filter = (ResponseCacheFilter)responseCacheAttribute.CreateInstance(
                 GetServiceProvider(cacheProfiles: null));
-            var context = GetActionExecutingContext(new List<IFilterMetadata> { filter });
+            var context = GetActionExecutingContext(filter);
 
             // Act
             filter.OnActionExecuting(context);
@@ -295,13 +294,13 @@ namespace Microsoft.AspNet.Mvc
             };
             var filter = (ResponseCacheFilter)responseCacheAttribute.CreateInstance(
                 GetServiceProvider(cacheProfiles: null));
-            var context = GetActionExecutingContext(new List<IFilterMetadata> { filter });
+            var context = GetActionExecutingContext(filter);
 
             // Act & Assert
             var exception = Assert.Throws<InvalidOperationException>(() =>
-                           {
-                               filter.OnActionExecuting(context);
-                           });
+            {
+                filter.OnActionExecuting(context);
+            });
             Assert.Equal(
                 "If the 'NoStore' property is not set to true, 'Duration' property must be specified.",
                 exception.Message);
@@ -326,18 +325,18 @@ namespace Microsoft.AspNet.Mvc
             return serviceProvider.Object;
         }
 
-        private ActionExecutingContext GetActionExecutingContext(List<IFilterMetadata> filters = null)
+        private ActionExecutingContext GetActionExecutingContext(params IFilterMetadata[] filters)
         {
             return new ActionExecutingContext(
                 new ActionContext(new DefaultHttpContext(), new RouteData(), new ActionDescriptor()),
-                filters ?? new List<IFilterMetadata>(),
+                filters?.ToList() ?? new List<IFilterMetadata>(),
                 new Dictionary<string, object>(),
                 new object());
         }
 
         private void AssertHeaderEquals(string expected, string actual)
         {
-            // OrderBy is used because the order of the results may very depending on the platform / client.
+            // OrderBy is used because the order of the results may vary depending on the platform / client.
             Assert.Equal(
                 expected.Split(',').Select(p => p.Trim()).OrderBy(item => item, StringComparer.Ordinal),
                 actual.Split(',').Select(p => p.Trim()).OrderBy(item => item, StringComparer.Ordinal));

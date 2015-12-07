@@ -5,7 +5,7 @@ using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace UrlHelperSample
+namespace UrlHelperSample.Web
 {
     public class Startup
     {
