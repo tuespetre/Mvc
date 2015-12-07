@@ -129,7 +129,6 @@ namespace Microsoft.Extensions.DependencyInjection
             //
             // The DefaultModelMetadataProvider does significant caching and should be a singleton.
             services.TryAddSingleton<IModelMetadataProvider, DefaultModelMetadataProvider>();
-            services.TryAddSingleton<IValidationAttributeAdapterProvider, >();
             services.TryAdd(ServiceDescriptor.Transient<ICompositeMetadataDetailsProvider>(serviceProvider =>
             {
                 var options = serviceProvider.GetRequiredService<IOptions<MvcOptions>>().Value;

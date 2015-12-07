@@ -5,6 +5,7 @@ using System;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.DataAnnotations;
 using Microsoft.AspNet.Mvc.DataAnnotations.Internal;
+using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.OptionsModel;
@@ -72,8 +73,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.TryAddEnumerable(
                 ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, MvcDataAnnotationsMvcOptionsSetup>());
-            services.TryAddSingleton<IValidationAttributeAdapterProvider>(
-                (s) => { return new ValidationAttributeAdapterProvider(); });
+            services.AddSingleton<IValidationAttributeAdapterProvider>(new ValidationAttributeAdapterProvider());
         }
 
         // Internal for testing.

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNet.Mvc.ModelBinding.Validation;
+using Microsoft.AspNet.Mvc.DataAnnotations;
 using Xunit;
 
-namespace Microsoft.AspNet.Mvc.DataAnnotations.Test
+namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
     public class ValidationAttributeAdapterProviderTest
     {

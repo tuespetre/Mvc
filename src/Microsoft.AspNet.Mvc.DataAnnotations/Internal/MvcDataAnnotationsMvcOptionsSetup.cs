@@ -32,7 +32,6 @@ namespace Microsoft.AspNet.Mvc.DataAnnotations.Internal
 
             options.ModelMetadataDetailsProviders.Add(new DataAnnotationsMetadataProvider());
 
-            var modelMetadataProvider = serviceProvider.GetRequiredService<IModelMetadataProvider>();
             options.ModelValidatorProviders.Add(new DataAnnotationsModelValidatorProvider(
                 dataAnnotationLocalizationOptions,
                 stringLocalizerFactory,
