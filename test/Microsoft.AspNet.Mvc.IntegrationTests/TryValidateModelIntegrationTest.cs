@@ -147,8 +147,8 @@ namespace Microsoft.AspNet.Mvc.IntegrationTests
             OperationBindingContext operationContext)
         {
             var controller = new TestController();
-            controller.ObjectValidator = ModelBindingTestHelper.GetObjectValidator();
             controller.ControllerContext = new ControllerContext(operationContext.ActionContext);
+            controller.ObjectValidator = ModelBindingTestHelper.GetObjectValidator();
             controller.MetadataProvider = operationContext.MetadataProvider;
             controller.ControllerContext.ValidatorProviders = new[] { operationContext.ValidatorProvider }.ToList();
 
