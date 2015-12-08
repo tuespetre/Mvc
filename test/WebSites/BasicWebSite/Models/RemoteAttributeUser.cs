@@ -17,7 +17,6 @@ namespace BasicWebSite.Models
         [Remote(action: "IsIdAvailable", controller: "RemoteAttribute_Verify", areaName: null, HttpMethod = "Post")]
         public string UserId2 { get; set; }
 
-        // Controller in MyArea area.
         [Remote(
             action: "IsIdAvailable",
             controller: "RemoteAttribute_Verify",
@@ -25,7 +24,6 @@ namespace BasicWebSite.Models
             ErrorMessage = "/Area1/RemoteAttribute_Verify/IsIdAvailable rejects you.")]
         public string UserId3 { get; set; }
 
-        // Controller in AnotherArea area.
         [Remote(
             action:"IsIdAvailable",
             controller: "RemoteAttribute_Verify",
