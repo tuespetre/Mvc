@@ -18,7 +18,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         where TAttribute : ValidationAttribute
     {
         /// <summary>
-        /// Instantiates a new <see cref="AttributeAdapterBase{TAttribute}"/>
+        /// Instantiates a new <see cref="AttributeAdapterBase{TAttribute}"/>.
         /// </summary>
         /// <param name="attribute">The <see cref="ValidationAttribute"/> being wrapped.</param>
         /// <param name="stringLocalizer">The <see cref="IStringLocalizer"/> to be used in error generation.</param>

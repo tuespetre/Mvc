@@ -42,7 +42,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         }
 
         /// <summary>
-        /// Gets the <see cref="Mvc.ActionContext"/>
+        /// Gets the <see cref="Mvc.ActionContext"/>.
         /// </summary>
         public ActionContext ActionContext { get; }
 
@@ -52,7 +52,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         public ModelMetadata ModelMetadata { get; }
 
         /// <summary>
-        /// Gets the <see cref="IModelMetadataProvider"/> 
+        /// Gets the <see cref="IModelMetadataProvider"/>.
         /// </summary>
         public IModelMetadataProvider MetadataProvider { get; }
     }
