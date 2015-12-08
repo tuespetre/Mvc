@@ -10,6 +10,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     /// </summary>
     public class ModelValidationContextBase
     {
+        /// <summary>
+        /// Instantiates a new <see cref="ModelValidationContextBase"/>.
+        /// </summary>
+        /// <param name="actionContext">The <see cref="ActionContext"/> for this context.</param>
+        /// <param name="modelMetadata">The <see cref="ModelMetadata"/> for this model.</param>
+        /// <param name="metadataProvider">The <see cref="IModelMetadataProvider"/> to be used by this context.</param>
         public ModelValidationContextBase(
             ActionContext actionContext,
             ModelMetadata modelMetadata,
@@ -36,17 +42,17 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="Mvc.ActionContext"/>
+        /// Gets the <see cref="Mvc.ActionContext"/>
         /// </summary>
         public ActionContext ActionContext { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="ModelBinding.ModelMetadata"/> associated with <see cref="Model"/>.
+        /// Gets the <see cref="ModelBinding.ModelMetadata"/>.
         /// </summary>
         public ModelMetadata ModelMetadata { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="IModelMetadataProvider"/> 
+        /// Gets the <see cref="IModelMetadataProvider"/> 
         /// </summary>
         public IModelMetadataProvider MetadataProvider { get; }
     }

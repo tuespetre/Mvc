@@ -13,7 +13,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// <see cref="GetErrorMessage(ModelValidationContextBase)"/>.
         /// </summary>
         /// <param name="validationContext">The context to use in message creation.</param>
-        /// <returns>The localized and parameterized error message.</returns>
+        /// <returns>The localized error message.</returns>
         string GetErrorMessage(ModelValidationContextBase validationContext);
     }
 }

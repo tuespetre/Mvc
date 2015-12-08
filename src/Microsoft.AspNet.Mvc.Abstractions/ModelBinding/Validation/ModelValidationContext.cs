@@ -11,19 +11,23 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         public ModelValidationContext(
             ActionContext actionContext,
             ModelMetadata modelMetadata,
-            IModelMetadataProvider metadataProvider)
+            IModelMetadataProvider metadataProvider,
+            object container,
+            object model)
             : base(actionContext, modelMetadata, metadataProvider)
         {
+            Container = container;
+            Model = model;
         }
 
         /// <summary>
         /// Gets or sets the model object.
         /// </summary>
-        public object Model { get; set; }
+        public object Model { get; }
 
         /// <summary>
         /// Gets or sets the model container object.
         /// </summary>
-        public object Container { get; set; }
+        public object Container { get; }
     }
 }

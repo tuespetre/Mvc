@@ -56,8 +56,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
         private const string LocalizationKey = "LocalizeIt";
 
-
-
         [Theory]
         [MemberData(nameof(Validate_SetsMemberName_OnValidationContext_ForProperties_Data))]
         public void Validate_SetsMemberName_OnValidationContext_ForProperties(
@@ -83,11 +81,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Container = container,
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: container,
+                model: model);
 
             // Act
             var results = validator.Validate(validationContext);
@@ -115,11 +111,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Container = container,
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: container,
+                model: model);
 
             // Act
             var result = validator.Validate(validationContext);
@@ -146,11 +140,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Container = container,
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: container,
+                model: model);
 
             // Act
             var result = validator.Validate(validationContext);
@@ -180,11 +172,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Container = container,
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: container,
+                model: model);
 
             // Act
             var result = validator.Validate(validationContext);
@@ -215,11 +205,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Container = container,
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: container,
+                model: model);
 
             // Act
             var results = validator.Validate(validationContext);
@@ -251,10 +239,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: null,
+                model: model);
 
             // Act
             var results = validator.Validate(validationContext);
@@ -284,10 +271,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: null,
+                model: model);
 
             // Act
             var results = validator.Validate(validationContext);
@@ -318,11 +304,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Container = container,
-                Model = "abcde"
-            };
+                metadataProvider: _metadataProvider,
+                container: container,
+                model: "abcde");
 
             // Act
             var result = validator.Validate(validationContext);
@@ -424,10 +408,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
-                metadataProvider: _metadataProvider)
-            {
-                Model = model
-            };
+                metadataProvider: _metadataProvider,
+                container: null,
+                model: model);
 
             // Act
             validator.Validate(validationContext);

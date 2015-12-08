@@ -73,8 +73,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.TryAddEnumerable(
                 ServiceDescriptor.Transient<IConfigureOptions<MvcOptions>, MvcDataAnnotationsMvcOptionsSetup>());
-            var attributeAdapterProvider = new ValidationAttributeAdapterProvider();
-            services.TryAddSingleton<IValidationAttributeAdapterProvider>(s => attributeAdapterProvider);
+            services.TryAddSingleton<IValidationAttributeAdapterProvider, ValidationAttributeAdapterProvider>();
         }
 
         // Internal for testing.

@@ -11,12 +11,12 @@ using Microsoft.Extensions.Localization;
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 {
     /// <summary>
-    /// Provides server-side validation of Models
+    /// Provides validation based on the given <see cref="ValidationAttribute"/>.
     /// </summary>
     public class DataAnnotationsModelValidator : IModelValidator
     {
-        private IStringLocalizer _stringLocalizer;
-        private IValidationAttributeAdapterProvider _validationAttributeAdapterProvider;
+        private readonly IStringLocalizer _stringLocalizer;
+        private readonly IValidationAttributeAdapterProvider _validationAttributeAdapterProvider;
 
         public DataAnnotationsModelValidator(
             ValidationAttribute attribute,
@@ -45,6 +45,23 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// <returns>An enumerable of the validation results.</returns>
         public IEnumerable<ModelValidationResult> Validate(ModelValidationContext validationContext)
         {
+            if (validationContext == null)
+            {
+                throw new ArgumentNullException(nameof(validationContext));
+            }
+            if (validationContext.ModelMetadata == null)
+            {
+                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
+                    nameof(validationContext.ModelMetadata),
+                    nameof(validationContext)));
+            }
+            if (validationContext.MetadataProvider == null)
+            {
+                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
+                    nameof(validationContext.MetadataProvider),
+                    nameof(validationContext)));
+            }
+
             var metadata = validationContext.ModelMetadata;
             var memberName = metadata.PropertyName ?? metadata.ModelType.Name;
             var container = validationContext.Container;
@@ -90,23 +107,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
         private string GetErrorMessage(ModelValidationContextBase validationContext)
         {
-            if (validationContext == null)
-            {
-                throw new ArgumentNullException(nameof(validationContext));
-            }
-            if (validationContext.ModelMetadata == null)
-            {
-                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
-                     "ModelMetadata",
-                    nameof(validationContext)));
-            }
-            if (validationContext.MetadataProvider == null)
-            {
-                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
-                    "ModelMetadata",
-                    nameof(validationContext)));
-            }
-
             var adapter = _validationAttributeAdapterProvider.GetAttributeAdapter(Attribute, _stringLocalizer);
             return adapter?.GetErrorMessage(validationContext);
         }

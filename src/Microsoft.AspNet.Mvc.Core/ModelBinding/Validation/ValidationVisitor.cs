@@ -98,11 +98,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     var context = new ModelValidationContext(
                         _actionContext,
                         _metadata,
-                        _metadataProvider)
-                    {
-                        Container = _container,
-                        Model = _model
-                    };
+                        _metadataProvider,
+                        _container,
+                        _model);
 
                     var results = new List<ModelValidationResult>();
                     for (var i = 0; i < count; i++)

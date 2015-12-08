@@ -43,6 +43,11 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// <inheritdoc/>
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
+            if (validationContext == null)
+            {
+                throw new ArgumentNullException(nameof(validationContext));
+            }
+
             return GetErrorMessage(
                 validationContext.ModelMetadata,
                 validationContext.ModelMetadata.GetDisplayName(),

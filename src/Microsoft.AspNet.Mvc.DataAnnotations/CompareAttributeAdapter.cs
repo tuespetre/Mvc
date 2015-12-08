@@ -28,14 +28,18 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             }
 
             var errorMessage = GetErrorMessage(context);
-            var clientRule = new ModelClientValidationEqualToRule(errorMessage,
-                                                            FormatPropertyForClientValidation(Attribute.OtherProperty));
+            var clientRule = new ModelClientValidationEqualToRule(errorMessage, "*." + Attribute.OtherProperty);
             return new[] { clientRule };
         }
 
         /// <inheritdoc />
         public override string GetErrorMessage(ModelValidationContextBase validationContext)
         {
+            if (validationContext == null)
+            {
+                throw new ArgumentNullException(nameof(validationContext));
+            }
+
             var displayName = validationContext.ModelMetadata.GetDisplayName();
             var otherPropertyDisplayName = GetOtherPropertyDisplayName(validationContext);
             return GetErrorMessage(validationContext.ModelMetadata, displayName, otherPropertyDisplayName);
@@ -59,11 +63,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             }
 
             return Attribute.OtherProperty;
-        }
-
-        private static string FormatPropertyForClientValidation(string property)
-        {
-            return "*." + property;
         }
     }
 }

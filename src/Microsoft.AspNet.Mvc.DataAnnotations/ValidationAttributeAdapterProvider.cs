@@ -9,7 +9,6 @@ using Microsoft.Extensions.Localization;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding
 {
-
     /// <summary>
     /// Creates a <see cref="IAttributeAdapter"/> for the given attribute.
     /// </summary>
