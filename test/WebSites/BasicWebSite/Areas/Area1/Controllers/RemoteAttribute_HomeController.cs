@@ -1,16 +1,12 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BasicWebSite.Models;
 using Microsoft.AspNet.Mvc;
 
-namespace BasicWebSite.Areas.Aria.Controllers
+namespace BasicWebSite.Areas.Area1.Controllers
 {
-    [Area("Aria")]
+    [Area("Area1")]
     public class RemoteAttribute_HomeController : Controller
     {
         private static RemoteAttributeUser _user;
@@ -18,8 +14,6 @@ namespace BasicWebSite.Areas.Aria.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            //System.Diagnostics.Debugger.Launch();
-
             return View();
         }
 

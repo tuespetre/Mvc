@@ -3,9 +3,9 @@
 
 using Microsoft.AspNet.Mvc;
 
-namespace ValidationWebSite.MyArea.Controllers
+namespace BasicWebSite.Areas.Area1.Controllers
 {
-    [Area("Aria")]
+    [Area("Area1")]
     public class RemoteAttribute_VerifyController : Controller
     {
         // This action is overloaded and may receive requests to validate either UserId1 or UserId3.

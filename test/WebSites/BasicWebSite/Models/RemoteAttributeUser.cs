@@ -21,15 +21,15 @@ namespace BasicWebSite.Models
         [Remote(
             action: "IsIdAvailable",
             controller: "RemoteAttribute_Verify",
-            areaName:"Aria",
-            ErrorMessage = "/Aria/RemoteAttribute_Verify/IsIdAvailable rejects you.")]
+            areaName:"Area1",
+            ErrorMessage = "/Area1/RemoteAttribute_Verify/IsIdAvailable rejects you.")]
         public string UserId3 { get; set; }
 
         // Controller in AnotherArea area.
         [Remote(
             action:"IsIdAvailable",
             controller: "RemoteAttribute_Verify",
-            areaName: "AnotherAria",
+            areaName: "Area2",
             AdditionalFields = "UserId1, UserId2, UserId3")]
         public string UserId4 { get; set; }
     }
