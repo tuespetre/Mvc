@@ -23,7 +23,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
         public HttpClient Client { get; }
 
         [Theory]
-        [InlineData("Aria", "/Aria")]
+        [InlineData("Area1", "/Area1")]
         [InlineData("Root", "")]
         public async Task RemoteAttribute_LeadsToExpectedValidationAttributes(string areaName, string pathSegment)
         {
@@ -55,9 +55,9 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
         [Theory]
         [InlineData("", "\"/RemoteAttribute_Verify/IsIdAvailable rejects Joe1.\"")]
-        [InlineData("/Aria", "false")]
-        [InlineData("/AnotherAria",
-            "\"/AnotherAria/RemoteAttribute_Verify/IsIdAvailable rejects 'Joe4' with 'Joe1', 'Joe2', and 'Joe3'.\"")]
+        [InlineData("/Area1", "false")]
+        [InlineData("/Area2",
+            "\"/Area2/RemoteAttribute_Verify/IsIdAvailable rejects 'Joe4' with 'Joe1', 'Joe2', and 'Joe3'.\"")]
         public async Task RemoteAttribute_VerificationAction_GetReturnsExpectedJson(
             string pathSegment,
             string expectedContent)
@@ -79,7 +79,7 @@ namespace Microsoft.AspNet.Mvc.FunctionalTests
 
         [Theory]
         [InlineData("", "\"/RemoteAttribute_Verify/IsIdAvailable rejects Jane1.\"")]
-        [InlineData("/Aria", "false")]
+        [InlineData("/Area1", "false")]
         public async Task RemoteAttribute_VerificationAction_PostReturnsExpectedJson(
             string pathSegment,
             string expectedContent)
