@@ -6,6 +6,7 @@ using Microsoft.AspNet.Mvc;
 
 namespace BasicWebSite.Controllers
 {
+    [Route("[controller]/[action]")]
     public class RemoteAttribute_HomeController : Controller
     {
         private static RemoteAttributeUser _user;

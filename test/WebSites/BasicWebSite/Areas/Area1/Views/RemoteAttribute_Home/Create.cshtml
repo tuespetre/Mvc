@@ -1,7 +1,10 @@
 ﻿@model BasicWebSite.Models.RemoteAttributeUser
 @{
     Layout = "/Areas/Area1/Views/RemoteAttribute_Home/_Layout.cshtml";
-    ViewBag.Title = "Create in Area1 area.";
+    object areaObject;
+    ViewContext.ActionDescriptor.RouteValueDefaults.TryGetValue("area", out areaObject);
+    var areaName = (areaObject as string) ?? "root";
+    ViewBag.Title = "Create in " + areaName + " area.";
 }
 
 <h2>@ViewBag.Title</h2>

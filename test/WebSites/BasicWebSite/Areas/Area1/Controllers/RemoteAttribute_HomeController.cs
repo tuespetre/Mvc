@@ -7,6 +7,7 @@ using Microsoft.AspNet.Mvc;
 namespace BasicWebSite.Areas.Area1.Controllers
 {
     [Area("Area1")]
+    [Route("[area]/[controller]/[action]")]
     public class RemoteAttribute_HomeController : Controller
     {
         private static RemoteAttributeUser _user;
@@ -31,6 +32,7 @@ namespace BasicWebSite.Areas.Area1.Controllers
         }
 
         [HttpGet]
+        [Route("/[area]/[controller]/[action]", Name = "Area1Home")]
         public IActionResult Details()
         {
             return View(_user);
