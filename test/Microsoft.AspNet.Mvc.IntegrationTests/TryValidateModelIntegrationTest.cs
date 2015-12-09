@@ -2,18 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.Abstractions;
+using System.Linq;
 using Microsoft.AspNet.Mvc.ModelBinding;
 using Microsoft.AspNet.Testing;
-using Microsoft.AspNet.Http.Internal;
-#if !DNXCORE50
-using Microsoft.AspNet.Testing.xunit;
-#endif
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.IntegrationTests
