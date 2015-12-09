@@ -7,6 +7,7 @@ using BasicWebSite.Models;
 namespace BasicWebSite.Ares.Area2.Controllers
 {
     [Area("Area2")]
+    [Route("[area]/[controller]/[action]")]
     public class RemoteAttribute_VerifyController : Controller
     {
         // Demonstrates validation action when AdditionalFields causes client to send multiple values.
