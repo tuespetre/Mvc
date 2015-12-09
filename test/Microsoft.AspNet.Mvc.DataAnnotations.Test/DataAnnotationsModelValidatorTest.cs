@@ -24,9 +24,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
 
             // Act
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
 
             // Assert
             Assert.Same(attribute, validator.Attribute);
@@ -54,8 +54,6 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             }
         }
 
-        private const string LocalizationKey = "LocalizeIt";
-
         [Theory]
         [MemberData(nameof(Validate_SetsMemberName_OnValidationContext_ForProperties_Data))]
         public void Validate_SetsMemberName_OnValidationContext_ForProperties(
@@ -75,9 +73,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 .Returns(ValidationResult.Success)
                 .Verifiable();
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute.Object,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
@@ -105,9 +103,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             attribute.Setup(a => a.IsValid(model)).Returns(true);
 
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute.Object,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
@@ -134,9 +132,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             attribute.Setup(a => a.IsValid(model)).Returns(false);
 
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute.Object,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
@@ -166,9 +164,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 .Setup(p => p.IsValidPublic(It.IsAny<object>(), It.IsAny<ValidationContext>()))
                 .Returns(ValidationResult.Success);
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute.Object,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
@@ -198,9 +196,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                  .Setup(p => p.IsValidPublic(It.IsAny<object>(), It.IsAny<ValidationContext>()))
                  .Returns(new ValidationResult(errorMessage, memberNames: null));
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute.Object,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
 
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
@@ -233,9 +231,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                  .Returns(new ValidationResult(errorMessage, new[] { "FirstName" }));
 
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute.Object,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
@@ -265,9 +263,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                  .Returns(new ValidationResult("Name error", new[] { "Name" }));
 
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute.Object,
-                stringLocalizer: null,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer: null);
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
@@ -298,9 +296,9 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             stringLocalizer.Setup(s => s[attribute.ErrorMessage, It.IsAny<object[]>()]).Returns(localizedString);
 
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute,
-                stringLocalizer.Object,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer.Object);
             var validationContext = new ModelValidationContext(
                 actionContext: new ActionContext(),
                 modelMetadata: metadata,
@@ -328,55 +326,55 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 return new TheoryData<ValidationAttribute, string, object[]>
                 {
                     {
-                        new RegularExpressionAttribute(regex) { ErrorMessage = LocalizationKey },
+                        new RegularExpressionAttribute(regex),
                         pattern,
                         new object[] { nameof(SampleModel), regex }
                     },
                     {
-                        new MaxLengthAttribute(length) { ErrorMessage = LocalizationKey },
+                        new MaxLengthAttribute(length),
                         pattern,
                         new object[] { nameof(SampleModel), length }},
                     {
-                        new MaxLengthAttribute(length) { ErrorMessage = LocalizationKey },
+                        new MaxLengthAttribute(length),
                         pattern,
                         new object[] { nameof(SampleModel), length }
                     },
                     {
-                        new CompareAttribute(pattern) { ErrorMessage = LocalizationKey },
+                        new CompareAttribute(pattern),
                         pattern,
                         new object[] { nameof(SampleModel), pattern }},
                     {
-                        new MinLengthAttribute(length) { ErrorMessage = LocalizationKey },
+                        new MinLengthAttribute(length),
                         "a",
                         new object[] { nameof(SampleModel), length }
                     },
                     {
-                        new CreditCardAttribute() { ErrorMessage = LocalizationKey },
+                        new CreditCardAttribute(),
                         pattern,
                         new object[] { nameof(SampleModel), "CreditCard" }
                     },
                     {
-                        new StringLengthAttribute(length) { MinimumLength = 1, ErrorMessage = LocalizationKey },
+                        new StringLengthAttribute(length) { MinimumLength = 1},
                         "",
                         new object[] { nameof(SampleModel), 1, length }
                     },
                     {
-                        new RangeAttribute(0, length) { ErrorMessage = LocalizationKey },
+                        new RangeAttribute(0, length),
                         pattern,
                         new object[] { nameof(SampleModel), 0, length}
                     },
                     {
-                        new EmailAddressAttribute() { ErrorMessage = LocalizationKey },
+                        new EmailAddressAttribute(),
                         pattern,
                         new object[] { nameof(SampleModel), "EmailAddress" }
                     },
                     {
-                        new PhoneAttribute() { ErrorMessage = LocalizationKey },
+                        new PhoneAttribute(),
                         pattern,
                         new object[] { nameof(SampleModel), "PhoneNumber" }
                     },
                     {
-                        new UrlAttribute() { ErrorMessage = LocalizationKey },
+                        new UrlAttribute(),
                         pattern,
                         new object[] { nameof(SampleModel), "Url"  }
                     }
@@ -391,18 +389,13 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             string model,
             object[] values)
         {
-            if (attribute is StringLengthAttribute)
-            {
-                Console.WriteLine();
-            }
-
             // Arrange
             var stringLocalizer = new Mock<IStringLocalizer>();
 
             var validator = new DataAnnotationsModelValidator(
+                new ValidationAttributeAdapterProvider(),
                 attribute,
-                stringLocalizer.Object,
-                validationAttributeAdapterProvider: new ValidationAttributeAdapterProvider());
+                stringLocalizer.Object);
 
             var metadata = _metadataProvider.GetMetadataForType(typeof(SampleModel));
             var validationContext = new ModelValidationContext(
@@ -418,7 +411,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Assert
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(values) + " " + attribute.GetType().Name;
 
-            stringLocalizer.Verify(l => l[LocalizationKey, values], json);
+            stringLocalizer.Verify(l => l[attribute.ErrorMessage, values], json);
         }
 
         public abstract class TestableValidationAttribute : ValidationAttribute

@@ -10,12 +10,12 @@ using Microsoft.Extensions.Localization;
 namespace Microsoft.AspNet.Mvc.ModelBinding
 {
     /// <summary>
-    /// Creates a <see cref="IAttributeAdapter"/> for the given attribute.
+    /// Creates an <see cref="IAttributeAdapter"/> for the given attribute.
     /// </summary>
     public class ValidationAttributeAdapterProvider : IValidationAttributeAdapterProvider
     {
         /// <summary>
-        /// Creates a <see cref="IAttributeAdapter"/> for the given attribute.
+        /// Creates an <see cref="IAttributeAdapter"/> for the given attribute.
         /// </summary>
         /// <param name="attribute">The attribute to create an adapter for.</param>
         /// <param name="stringLocalizer">The localizer to provide to the adapter.</param>

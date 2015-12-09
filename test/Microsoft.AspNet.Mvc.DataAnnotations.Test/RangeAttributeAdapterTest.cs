@@ -3,6 +3,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Testing;
+using Microsoft.Extensions.Localization;
+using Moq;
 using Xunit;
 
 namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
@@ -18,6 +20,15 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var metadata = provider.GetMetadataForProperty(typeof(string), "Length");
 
             var attribute = new RangeAttribute(typeof(decimal), "0", "100");
+            attribute.ErrorMessage = "The field Length must be between {0} and {1}.";
+
+            var expectedProperties = new object[] { "0", "100" };
+            var expectedMessage = "The field Length must be between 0 and 100.";
+
+            var stringLocalizer = new Mock<IStringLocalizer>();
+            stringLocalizer.Setup(s => s[attribute.ErrorMessage, expectedProperties])
+                .Returns(new LocalizedString(attribute.ErrorMessage, expectedMessage));
+
             var adapter = new RangeAttributeAdapter(attribute, stringLocalizer: null);
 
             var actionContext = new ActionContext();
@@ -32,7 +43,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             Assert.Equal(2, rule.ValidationParameters.Count);
             Assert.Equal(0m, rule.ValidationParameters["min"]);
             Assert.Equal(100m, rule.ValidationParameters["max"]);
-            Assert.Equal(@"The field Length must be between 0 and 100.", rule.ErrorMessage);
+            Assert.Equal(expectedMessage, rule.ErrorMessage);
         }
     }
 }

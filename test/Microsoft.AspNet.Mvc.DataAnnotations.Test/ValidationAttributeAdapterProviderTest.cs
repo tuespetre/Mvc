@@ -14,44 +14,36 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         private readonly IValidationAttributeAdapterProvider _validationAttributeAdapterProvider =
             new ValidationAttributeAdapterProvider();
 
-        public static IEnumerable<object[]> DataAnnotationAdapters
+        public static TheoryData<ValidationAttribute, Type> DataAnnotationAdapters
         {
             get
             {
-                yield return new object[]
+                return new TheoryData<ValidationAttribute, Type>
                 {
-                    new RegularExpressionAttribute("abc"),
-                    typeof(RegularExpressionAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new MaxLengthAttribute(),
-                    typeof(MaxLengthAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                   new MinLengthAttribute(1),
-                  typeof(MinLengthAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new RangeAttribute(1, 100),
-                    typeof(RangeAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new StringLengthAttribute(6),
-                    typeof(StringLengthAttributeAdapter)
-                };
-
-                yield return new object[]
-                {
-                    new RequiredAttribute(),
-                    typeof(RequiredAttributeAdapter)
+                    {
+                        new RegularExpressionAttribute("abc"),
+                        typeof(RegularExpressionAttributeAdapter)
+                    },
+                    {
+                        new MaxLengthAttribute(),
+                        typeof(MaxLengthAttributeAdapter)
+                    },
+                    {
+                        new MinLengthAttribute(1),
+                        typeof(MinLengthAttributeAdapter)
+                    },
+                    {
+                        new RangeAttribute(1, 100),
+                        typeof(RangeAttributeAdapter)
+                    },
+                    {
+                        new StringLengthAttribute(6),
+                        typeof(StringLengthAttributeAdapter)
+                    },
+                    {
+                        new RequiredAttribute(),
+                        typeof(RequiredAttributeAdapter)
+                    }
                 };
             }
         }
@@ -63,20 +55,22 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                Type expectedAdapterType)
         {
             // Arrange and Act
-            var adapter = _validationAttributeAdapterProvider.GetAttributeAdapter(attribute, null);
+            var adapter = _validationAttributeAdapterProvider.GetAttributeAdapter(attribute, stringLocalizer: null);
 
             // Assert
             Assert.IsType(expectedAdapterType, adapter);
         }
 
-        public static IEnumerable<object[]> DataTypeAdapters
+        public static TheoryData<ValidationAttribute, string> DataTypeAdapters
         {
             get
             {
-                yield return new object[] { new UrlAttribute(), "url" };
-                yield return new object[] { new CreditCardAttribute(), "creditcard" };
-                yield return new object[] { new EmailAddressAttribute(), "email" };
-                yield return new object[] { new PhoneAttribute(), "phone" };
+                return new TheoryData<ValidationAttribute, string> {
+                    { new UrlAttribute(), "url" },
+                    { new CreditCardAttribute(), "creditcard" },
+                    { new EmailAddressAttribute(), "email" },
+                    { new PhoneAttribute(), "phone" }
+                };
             }
         }
 

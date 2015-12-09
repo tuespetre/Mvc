@@ -14,6 +14,32 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     {
         [Fact]
         [ReplaceCulture]
+        public void ClientRulesWithCompareAttribute_ErrorMessageUsesDisplayName_WithouLocalizer()
+        {
+            // Arrange
+            var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();
+            var metadata = metadataProvider.GetMetadataForProperty(typeof(PropertyDisplayNameModel), "MyProperty");
+
+            var attribute = new CompareAttribute("OtherProperty");
+            var adapter = new CompareAttributeAdapter(attribute, stringLocalizer: null);
+
+            var actionContext = new ActionContext();
+            var context = new ClientModelValidationContext(actionContext, metadata, metadataProvider);
+
+            // Act
+            var rules = adapter.GetClientValidationRules(context);
+
+            // Assert
+            var rule = Assert.Single(rules);
+            // Mono issue - https://github.com/aspnet/External/issues/19
+            Assert.Equal(
+                PlatformNormalizer.NormalizeContent(
+                    "'MyPropertyDisplayName' and 'OtherPropertyDisplayName' do not match."),
+                rule.ErrorMessage);
+        }
+
+        [Fact]
+        [ReplaceCulture]
         public void ClientRulesWithCompareAttribute_ErrorMessageUsesDisplayName()
         {
             // Arrange

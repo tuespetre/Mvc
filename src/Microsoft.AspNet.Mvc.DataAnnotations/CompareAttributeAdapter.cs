@@ -48,7 +48,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         private string GetOtherPropertyDisplayName(ModelValidationContextBase validationContext)
         {
             // The System.ComponentModel.DataAnnotations.CompareAttribute doesn't populate the
-            // OtherPropertyDisplayName until after IsValid() is called. Therefore, by the time we get
+            // OtherPropertyDisplayName until after IsValid() is called. Therefore, at the time we get
             // the error message for client validation, the display name is not populated and won't be used.
             var otherPropertyDisplayName = Attribute.OtherPropertyDisplayName;
             if (otherPropertyDisplayName == null && validationContext.ModelMetadata.ContainerType != null)

@@ -44,6 +44,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         /// </summary>
         /// <param name="modelMetadata">The <see cref="ModelMetadata"/> associated with the model annotated with
         /// <see cref="Attribute"/>.</param>
+        /// <param name="arguments">The value arguments which will be used in constructing the error message.</param>
         /// <returns>Formatted error string.</returns>
         protected virtual string GetErrorMessage(ModelMetadata modelMetadata, params object[] arguments)
         {

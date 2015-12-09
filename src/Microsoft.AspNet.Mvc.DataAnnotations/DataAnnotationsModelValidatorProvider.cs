@@ -57,7 +57,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                     continue;
                 }
 
-                var validator = new DataAnnotationsModelValidator(attribute, stringLocalizer, _validationAttributeAdapterProvider);
+                var validator = new DataAnnotationsModelValidator(
+                    _validationAttributeAdapterProvider,
+                    attribute,
+                    stringLocalizer);
 
                 // Inserts validators based on whether or not they are 'required'. We want to run
                 // 'required' validators first so that we get the best possible error message.

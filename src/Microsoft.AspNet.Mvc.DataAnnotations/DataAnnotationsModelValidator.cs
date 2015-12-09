@@ -18,19 +18,31 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
         private readonly IStringLocalizer _stringLocalizer;
         private readonly IValidationAttributeAdapterProvider _validationAttributeAdapterProvider;
 
+        /// <summary>
+        ///  Create a new instance of <see cref="DataAnnotationsModelValidator"/>.
+        /// </summary>
+        /// <param name="attribute">The <see cref="ValidationAttribute"/> which defines the behavior we're validating.</param>
+        /// <param name="stringLocalizer">The <see cref="IStringLocalizer"/> used to create messages.</param>
+        /// <param name="validationAttributeAdapterProvider">The <see cref="IValidationAttributeAdapterProvider"/>
+        /// which <see cref="ValidationAttributeAdapter{TAttribute}"/>'s will be created from.</param>
         public DataAnnotationsModelValidator(
+            IValidationAttributeAdapterProvider validationAttributeAdapterProvider,
             ValidationAttribute attribute,
-            IStringLocalizer stringLocalizer,
-            IValidationAttributeAdapterProvider validationAttributeAdapterProvider)
+            IStringLocalizer stringLocalizer)
         {
+            if (validationAttributeAdapterProvider == null)
+            {
+                throw new ArgumentNullException(nameof(validationAttributeAdapterProvider));
+            }
+
             if (attribute == null)
             {
                 throw new ArgumentNullException(nameof(attribute));
             }
 
+            _validationAttributeAdapterProvider = validationAttributeAdapterProvider;
             Attribute = attribute;
             _stringLocalizer = stringLocalizer;
-            _validationAttributeAdapterProvider = validationAttributeAdapterProvider;
         }
 
         /// <summary>
@@ -51,15 +63,19 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             }
             if (validationContext.ModelMetadata == null)
             {
-                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
-                    nameof(validationContext.ModelMetadata),
-                    nameof(validationContext)));
+                throw new ArgumentException(
+                    Resources.FormatPropertyOfTypeCannotBeNull(
+                        nameof(validationContext.ModelMetadata),
+                        typeof(ModelValidationContext)),
+                    nameof(validationContext));
             }
             if (validationContext.MetadataProvider == null)
             {
-                throw new ArgumentException(Resources.FormatPropertyOfTypeCannotBeNull(
-                    nameof(validationContext.MetadataProvider),
-                    nameof(validationContext)));
+                throw new ArgumentException(
+                    Resources.FormatPropertyOfTypeCannotBeNull(
+                        nameof(validationContext.MetadataProvider),
+                        typeof(ModelValidationContext)),
+                    nameof(validationContext));
             }
 
             var metadata = validationContext.ModelMetadata;

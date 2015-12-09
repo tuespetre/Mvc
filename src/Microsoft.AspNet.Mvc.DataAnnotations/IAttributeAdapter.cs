@@ -9,8 +9,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     public interface IAttributeAdapter : IClientModelValidator
     {
         /// <summary>
-        /// Implementors should provide the important values of their attribute to the base
-        /// <see cref="GetErrorMessage(ModelValidationContextBase)"/>.
+        /// Gets the error message.
         /// </summary>
         /// <param name="validationContext">The context to use in message creation.</param>
         /// <returns>The localized error message.</returns>
