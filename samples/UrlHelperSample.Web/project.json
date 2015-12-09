@@ -1,6 +1,6 @@
 {
     "commands": {
-        "weblistener": "Microsoft.AspNet.Hosting server=Microsoft.AspNet.Server.WebListener server.urls=http://localhost:5001",
+        "weblistener": "Microsoft.AspNet.Server.WebListener",
         "web": "Microsoft.AspNet.Server.Kestrel"
     },
     "dependencies": {
