@@ -1,6 +1,6 @@
 ﻿@model BasicWebSite.Models.RemoteAttributeUser
 @{
-    Layout = "/Views/RemoteAttribute_Home/_Layout.cshtml";
+    Layout = "_Layout.cshtml";
     object areaObject;
     ViewContext.ActionDescriptor.RouteValueDefaults.TryGetValue("area", out areaObject);
     var areaName = (areaObject as string) ?? "root";
