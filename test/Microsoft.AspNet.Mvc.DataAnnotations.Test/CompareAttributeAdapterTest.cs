@@ -14,7 +14,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
     {
         [Fact]
         [ReplaceCulture]
-        public void ClientRulesWithCompareAttribute_ErrorMessageUsesDisplayName_WithouLocalizer()
+        public void ClientRulesWithCompareAttribute_ErrorMessageUsesDisplayName_WithoutLocalizer()
         {
             // Arrange
             var metadataProvider = TestModelMetadataProvider.CreateDefaultProvider();

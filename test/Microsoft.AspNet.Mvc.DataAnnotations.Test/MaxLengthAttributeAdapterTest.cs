@@ -20,9 +20,10 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var metadata = provider.GetMetadataForProperty(typeof(string), "Length");
 
             var attribute = new MaxLengthAttribute(10);
+            attribute.ErrorMessage = "Property must be max '{1}' characters long.";
 
-            var expectedProperties = new object[] { 10 };
-            var expectedMessage = "Property must be max '10' character long.";
+            var expectedProperties = new object[] { "Length", 10 };
+            var expectedMessage = "Property must be max '10' characters long.";
 
             var stringLocalizer = new Mock<IStringLocalizer>();
             stringLocalizer.Setup(s => s[attribute.ErrorMessage, expectedProperties])

@@ -20,12 +20,12 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var metadata = provider.GetMetadataForProperty(typeof(string), "Length");
 
             var attribute = new StringLengthAttribute(8);
-            attribute.ErrorMessage = "Property must not be longer than '{0}' characters.";
+            attribute.ErrorMessage = "Property must not be longer than '{1}' characters.";
 
             var expectedMessage = "Property must not be longer than '8' characters.";
 
             var stringLocalizer = new Mock<IStringLocalizer>();
-            var expectedProperties = new object[] { 8 };
+            var expectedProperties = new object[] { "Length", 0, 8 };
 
             stringLocalizer.Setup(s => s[attribute.ErrorMessage, expectedProperties])
                 .Returns(new LocalizedString(attribute.ErrorMessage, expectedMessage));

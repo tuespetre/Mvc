@@ -315,6 +315,8 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             Assert.Equal("Longueur est invalide : 4", validationResult.Message);
         }
 
+        private const string LocalizationKey = "LocalizeIt";
+
         public static TheoryData Validate_AttributesIncludeValues
         {
             get
@@ -326,55 +328,55 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
                 return new TheoryData<ValidationAttribute, string, object[]>
                 {
                     {
-                        new RegularExpressionAttribute(regex),
+                        new RegularExpressionAttribute(regex) { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), regex }
                     },
                     {
-                        new MaxLengthAttribute(length),
+                        new MaxLengthAttribute(length) { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), length }},
                     {
-                        new MaxLengthAttribute(length),
+                        new MaxLengthAttribute(length) { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), length }
                     },
                     {
-                        new CompareAttribute(pattern),
+                        new CompareAttribute(pattern) { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), pattern }},
                     {
-                        new MinLengthAttribute(length),
+                        new MinLengthAttribute(length) { ErrorMessage = LocalizationKey },
                         "a",
                         new object[] { nameof(SampleModel), length }
                     },
                     {
-                        new CreditCardAttribute(),
+                        new CreditCardAttribute() { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), "CreditCard" }
                     },
                     {
-                        new StringLengthAttribute(length) { MinimumLength = 1},
+                        new StringLengthAttribute(length) { ErrorMessage = LocalizationKey, MinimumLength = 1},
                         "",
                         new object[] { nameof(SampleModel), 1, length }
                     },
                     {
-                        new RangeAttribute(0, length),
+                        new RangeAttribute(0, length) { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), 0, length}
                     },
                     {
-                        new EmailAddressAttribute(),
+                        new EmailAddressAttribute() { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), "EmailAddress" }
                     },
                     {
-                        new PhoneAttribute(),
+                        new PhoneAttribute() { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), "PhoneNumber" }
                     },
                     {
-                        new UrlAttribute(),
+                        new UrlAttribute() { ErrorMessage = LocalizationKey },
                         pattern,
                         new object[] { nameof(SampleModel), "Url"  }
                     }
@@ -411,7 +413,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             // Assert
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(values) + " " + attribute.GetType().Name;
 
-            stringLocalizer.Verify(l => l[attribute.ErrorMessage, values], json);
+            stringLocalizer.Verify(l => l[LocalizationKey, values], json);
         }
 
         public abstract class TestableValidationAttribute : ValidationAttribute

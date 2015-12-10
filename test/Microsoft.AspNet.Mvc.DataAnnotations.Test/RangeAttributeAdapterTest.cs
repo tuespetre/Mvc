@@ -20,7 +20,7 @@ namespace Microsoft.AspNet.Mvc.ModelBinding.Validation
             var metadata = provider.GetMetadataForProperty(typeof(string), "Length");
 
             var attribute = new RangeAttribute(typeof(decimal), "0", "100");
-            attribute.ErrorMessage = "The field Length must be between {0} and {1}.";
+            attribute.ErrorMessage = "The field Length must be between {1} and {2}.";
 
             var expectedProperties = new object[] { "0", "100" };
             var expectedMessage = "The field Length must be between 0 and 100.";
